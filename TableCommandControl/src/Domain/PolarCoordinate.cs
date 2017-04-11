@@ -31,8 +31,22 @@ namespace TableCommandControl.Domain {
         }
 
         /// <summary>
-        ///     Liefert oder setzt den Radius
+        ///     Liefert oder setzt den Radius in Millimeter
         /// </summary>
         public double Radius { get; set; }
+
+        /// <summary>
+        /// Liefert die Polarkoordinate als string im Format Winkel;Radius
+        /// </summary>
+        /// <returns></returns>
+        public string AsCommand() {
+            return $"{Angle:N1};{Radius:N1}";
+        }
+
+        /// <summary>Gibt eine Zeichenfolge zurück, die das aktuelle Objekt darstellt.</summary>
+        /// <returns>Eine Zeichenfolge, die das aktuelle Objekt darstellt.</returns>
+        public override string ToString() {
+            return $"[{Angle:N2}°;{Radius:N2}mm]";
+        }
     }
 }

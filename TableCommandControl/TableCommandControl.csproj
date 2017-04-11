@@ -107,6 +107,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="src\Themes\HeaderedContentControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="src\View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -115,7 +119,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="src\Communication\ArduinoStepperService.cs" />
+    <Compile Include="src\Communication\ArduinoProtocolLayer.cs" />
     <Compile Include="src\Domain\PolarCoordinate.cs" />
     <Compile Include="src\View\DMainViewModel.cs" />
     <Compile Include="src\View\IMainViewModel.cs" />

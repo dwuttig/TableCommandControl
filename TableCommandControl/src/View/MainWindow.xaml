@@ -5,12 +5,99 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TableCommandControl"
         xmlns:view="clr-namespace:TableCommandControl.View"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-     <d:DesignerProperties.DataContext>
-        <view:DMainViewModel></view:DMainViewModel>    
+        Background="Gainsboro"
+        Title="MainWindow"
+        Height="650"
+        Width="1024">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="MinHeight"
+                    Value="26" />
+            <Setter Property="Margin"
+                    Value="0,2" />
+        </Style>
+    </Window.Resources>
+    <d:DesignerProperties.DataContext>
+        <view:DMainViewModel />
     </d:DesignerProperties.DataContext>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <GroupBox Header="Generatoren">
+            <StackPanel Grid.IsSharedSizeScope="True">
+                <HeaderedContentControl Header="Number of Steps:">
+                    <xctk:IntegerUpDown Value="{Binding Steps}"
+                                        Minimum="1" />
+                </HeaderedContentControl>
+                <StackPanel Margin="0,5">
+                    <Label Content="Circle generator"
+                           Background="DarkGray" />
+
+                    <HeaderedContentControl Header="Circle radius:">
+                        <xctk:IntegerUpDown Value="{Binding CircleRadius}" />
+                    </HeaderedContentControl>
+                    <Button Content="Generate Coordinates"
+                            DockPanel.Dock="Bottom"
+                            Command="{Binding GenerateCircleCommand}" />
+                </StackPanel>
+
+                <StackPanel Margin="0,5">
+                    <Label Content="Helix generator"
+                           DockPanel.Dock="Top"
+                           Background="DarkGray" />
+
+                    <HeaderedContentControl Header="Start radius:">
+                        <xctk:IntegerUpDown Value="{Binding HelixStartRadius}"
+                                            Minimum="0" />
+                    </HeaderedContentControl>
+                    <HeaderedContentControl Header="End radius:">
+                        <xctk:IntegerUpDown Value="{Binding HelixEndRadius}"
+                                            Minimum="0" />
+                    </HeaderedContentControl>
+                    <HeaderedContentControl Header="Number of whorls:">
+                        <xctk:DoubleUpDown Value="{Binding HelixWhorls}"
+                                           Minimum="1" />
+                    </HeaderedContentControl>
+                    <Button Content="Generate Coordinates"
+                            DockPanel.Dock="Bottom"
+                            Command="{Binding GenerateHelixCommand}" />
+
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="0"
+                  Grid.Column="1"
+                  Header="Polar coordinates">
+
+            <ListView ItemsSource="{Binding PolarCoordinates}" />
+        </GroupBox>
+
+        <GroupBox Grid.ColumnSpan="3"
+                  Grid.Column="0"
+                  Grid.Row="1"
+                  Header="Communication Protocol">
+            <TextBox Height="200" />
+        </GroupBox>
+        <GroupBox Grid.Row="0"
+                  Grid.Column="2"
+                  Header="Preview">
+            <oxy:Plot PlotType="Polar">
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding PolarCoordinates}"
+                                    DataFieldY="AngleNormalized"
+                                    DataFieldX="Radius" />
+                </oxy:Plot.Series>
+            </oxy:Plot>
+        </GroupBox>
     </Grid>
 </Window>
