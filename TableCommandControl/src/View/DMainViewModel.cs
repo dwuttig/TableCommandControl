@@ -23,6 +23,22 @@ namespace TableCommandControl.View {
         public int CircleRadius { get; set; }
 
         /// <summary>
+        ///     Liefert oder setzt die aktuelle Polarkoordinate
+        /// </summary>
+        public PolarCoordinate CurrentPolarCoordinate { get; set; }
+
+        /// <summary>
+        ///     Liefert oder setzt die Fehlernachricht. Diese wird benutzt um eine Fehlerbenachrichtigung für den Nutzer
+        ///     anzuzeigen.
+        /// </summary>
+        public string ErrorMessage { get; set; }
+
+        /// <summary>
+        ///    Liefert oder setzt den Text der Protokollkommunikation.
+        /// </summary>
+        public string CommunicationProtocolText { get; set; }
+
+        /// <summary>
         ///     Liefert den Command zum Generieren eines Kreises anhand des Radius
         /// </summary>
         public RelayCommand GenerateCircleCommand { get; }
@@ -48,13 +64,28 @@ namespace TableCommandControl.View {
         public double HelixWhorls { get; set; }
 
         /// <summary>
+        ///     Liefert oder setzt die Info-Nachricht. Dies kann benutzt werden um dem Nutzer Hinweise zu geben.
+        /// </summary>
+        public string InfoMessage { get; set; }
+
+        /// <summary>
         ///     Liefert oder setzt die zu senden Polarkoordinaten.
         /// </summary>
         public ObservableCollection<PolarCoordinate> PolarCoordinates { get; set; }
 
         /// <summary>
+        ///     Liefert den Command zum Start des Sendens der Koordinaten
+        /// </summary>
+        public RelayCommand StartSendingCommand { get; }
+
+        /// <summary>
         ///     Liefert oder setzt die Schrittanzahl beim Generieren der Pfade.
         /// </summary>
         public int Steps { get; set; }
+
+        /// <summary>
+        ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
+        /// </summary>
+        public RelayCommand StopSendingCommand { get; }
     }
 }
