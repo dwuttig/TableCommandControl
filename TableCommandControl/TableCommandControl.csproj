@@ -108,6 +108,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="src\View\PatternGenerators\CircleGenerator.cs" />
+    <Compile Include="src\View\PatternGenerators\HelixGenerator.cs" />
+    <Compile Include="src\View\PatternGenerators\IPatternGenerator.cs" />
+    <Compile Include="src\View\PatternGenerators\RectangleGenerator.cs" />
+    <Compile Include="src\View\PatternGenerators\RectangularHelixGenerator.cs" />
+    <Page Include="src\Themes\ExpanderStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="src\Themes\HeaderedContentControlStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,0 +1,80 @@
+﻿using System;
+using System.Windows;
+
+using Com.QueoFlow.Commons.Mvvm;
+using Com.QueoFlow.Commons.Mvvm.Commands;
+
+using TableCommandControl.Domain;
+
+namespace TableCommandControl.View.PatternGenerators {
+    public class RectangleGenerator : ViewModelBase, IPatternGenerator {
+        private readonly IMainViewModel _mainViewModel;
+
+        private RelayCommand _generateCommand;
+
+        private int _sideA = 10;
+
+   
+
+        public RectangleGenerator(IMainViewModel mainViewModel) {
+            if (mainViewModel == null) {
+                throw new ArgumentNullException(nameof(mainViewModel));
+            }
+            _mainViewModel = mainViewModel;
+        }
+
+        /// <summary>
+        ///     Liefert den Command zum generieren des Pfads
+        /// </summary>
+        public RelayCommand GenerateCommand {
+            get {
+                if (_generateCommand == null) {
+                    _generateCommand = new RelayCommand(Generate, CanGenerate);
+                }
+
+                return _generateCommand;
+            }
+        }
+
+        /// <summary>
+        ///     Liefert oder setzt den StartRadius
+        /// </summary>
+        public int SideA {
+            get { return _sideA; }
+            set { SetProperty(ref _sideA, value); }}
+
+
+        private bool CanGenerate() {
+            return true;
+        }
+
+        private double DegreeToRadian(double angle) {
+            return Math.PI * angle / 180.0;
+        }
+
+        private void Generate() {
+            _mainViewModel.PolarCoordinates.Clear();
+            double currentAngle = 0;
+            double angleSteps = 360 / (double)_mainViewModel.Steps;
+            for (int i = 0; i < _mainViewModel.Steps+1; i++) {
+                _mainViewModel.PolarCoordinates.Add(new PolarCoordinate(currentAngle, GetRadiusFroAngle(currentAngle)*SideA/2));
+                currentAngle += angleSteps;
+            }
+        }
+
+        private double GetRadiusFroAngle(double angle) {
+            angle = ((angle + 45) % 90 - 45) / 180 * Math.PI;
+            return 1 / Math.Cos(angle);
+        }
+
+        private double RadianToDegree(double angle) {
+            return angle * (180.0 / Math.PI);
+        }
+
+        private PolarCoordinate ToPolarCoordinate(Point point) {
+            double radius = Math.Sqrt(Math.Pow(point.X, 2) + Math.Pow(point.Y, 2));
+            double angle = RadianToDegree(Math.Sin(point.Y / radius));
+            return new PolarCoordinate(angle, radius);
+        }
+    }
+}

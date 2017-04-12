@@ -14,7 +14,7 @@ namespace TableCommandControl.Communication {
         private readonly SerialPort _serialPort = new SerialPort("COM6", 9600, Parity.None, 8, StopBits.One);
 
         /// <summary>
-        /// Wird gefeurt wenn eine Exception aufgetreten ist
+        /// Wird gefeuert wenn eine Exception aufgetreten ist
         /// </summary>
         public event EventHandler<Exception> CommunicationErrorOccured;
 

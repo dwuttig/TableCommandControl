@@ -9,20 +9,93 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:behaviors="clr-namespace:Com.QueoFlow.Commons.Mvvm.Behaviors;assembly=Queo.Commons.MVVM"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:generators="clr-namespace:TableCommandControl.View.PatternGenerators"
         mc:Ignorable="d"
         Background="Gainsboro"
         Title="MainWindow"
-        Height="650"
+        Height="850"
         Width="1024">
     <Window.Resources>
+        <DataTemplate DataType="{x:Type generators:CircleGenerator}">
+            <Border BorderThickness="1"
+                    BorderBrush="Gray">
+                <Expander Header="Circle Generator"
+                          IsExpanded="True"
+                          Background="LightSteelBlue"
+                          Style="{DynamicResource ExpanderStyle}">
+                    <StackPanel Margin="5">
+                        <HeaderedContentControl Header="Circle radius:">
+                            <xctk:IntegerUpDown Value="{Binding CircleRadius}" />
+                        </HeaderedContentControl>
+                        <Button Content="Generate Coordinates"
+                                DockPanel.Dock="Bottom"
+                                Command="{Binding GenerateCircleCommand}" />
+                    </StackPanel>
+                </Expander>
+            </Border>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type generators:HelixGenerator}">
+            <Border BorderThickness="1"
+                    BorderBrush="Gray">
+                <Expander Header="Helix Generator"
+                          IsExpanded="True"
+                          Background="LightSteelBlue"
+                          Style="{DynamicResource ExpanderStyle}">
+                    <StackPanel Margin="5">
+                        <HeaderedContentControl Header="Start radius:">
+                            <xctk:IntegerUpDown Value="{Binding HelixStartRadius}"
+                                                Minimum="0" />
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="End radius:">
+                            <xctk:IntegerUpDown Value="{Binding HelixEndRadius}"
+                                                Minimum="0" />
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Number of whorls:">
+                            <xctk:DoubleUpDown Value="{Binding HelixWhorls}"
+                                               Minimum="1" />
+                        </HeaderedContentControl>
+                        <Button Content="Generate Coordinates"
+                                DockPanel.Dock="Bottom"
+                                Command="{Binding GenerateHelixCommand}" />
+
+                    </StackPanel>
+                </Expander>
+            </Border>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type generators:RectangleGenerator}">
+            <Border BorderThickness="1"
+                    BorderBrush="Gray">
+                <Expander Header="Rectangle Generator"
+                          IsExpanded="True"
+                          Background="LightSteelBlue"
+                          Style="{DynamicResource ExpanderStyle}">
+                    <StackPanel Margin="5">
+                        <HeaderedContentControl Header="Side length:">
+                            <xctk:IntegerUpDown Value="{Binding SideA}"
+                                                Minimum="0" />
+                        </HeaderedContentControl>
+                   
+                        <Button Content="Generate Coordinates"
+                                DockPanel.Dock="Bottom"
+                                Command="{Binding GenerateCommand}" />
+
+                    </StackPanel>
+                </Expander>
+            </Border>
+        </DataTemplate>
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+        </Style>
         <Style TargetType="Button">
             <Setter Property="MinHeight"
                     Value="26" />
             <Setter Property="Margin"
                     Value="0,2" />
         </Style>
+
     </Window.Resources>
-        <i:Interaction.Behaviors>
+    <i:Interaction.Behaviors>
         <behaviors:InfoMessageBehavior InfoMessage="{Binding InfoMessage}" />
         <behaviors:ErrorMessageBoxBehavior ErrorMessage="{Binding ErrorMessage}" />
     </i:Interaction.Behaviors>
@@ -32,7 +105,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="5" />   <ColumnDefinition />   <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="5" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -40,50 +115,24 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <GroupBox Header="Generatoren">
-            <StackPanel Grid.IsSharedSizeScope="True">
-                <HeaderedContentControl Header="Number of Steps:">
-                    <xctk:IntegerUpDown Value="{Binding Steps}"
-                                        Minimum="1" />
-                </HeaderedContentControl>
-                <StackPanel Margin="0,5">
-                    <Label Content="Circle generator"
-                           Background="DarkGray" />
+        <DockPanel>
+            <HeaderedContentControl Header="Steps:"
+                                    DockPanel.Dock="Top">
+                <xctk:IntegerUpDown Value="{Binding Steps}"
+                                    Minimum="0" />
+            </HeaderedContentControl>
+            <GroupBox Header="Generatoren">
+                <ListView ItemsSource="{Binding PatternGenerators}"
+                          Grid.IsSharedSizeScope="True"
+                          Background="Transparent"
+                          BorderThickness="0" />
 
-                    <HeaderedContentControl Header="Circle radius:">
-                        <xctk:IntegerUpDown Value="{Binding CircleRadius}" />
-                    </HeaderedContentControl>
-                    <Button Content="Generate Coordinates"
-                            DockPanel.Dock="Bottom"
-                            Command="{Binding GenerateCircleCommand}" />
-                </StackPanel>
-
-                <StackPanel Margin="0,5">
-                    <Label Content="Helix generator"
-                           DockPanel.Dock="Top"
-                           Background="DarkGray" />
-
-                    <HeaderedContentControl Header="Start radius:">
-                        <xctk:IntegerUpDown Value="{Binding HelixStartRadius}"
-                                            Minimum="0" />
-                    </HeaderedContentControl>
-                    <HeaderedContentControl Header="End radius:">
-                        <xctk:IntegerUpDown Value="{Binding HelixEndRadius}"
-                                            Minimum="0" />
-                    </HeaderedContentControl>
-                    <HeaderedContentControl Header="Number of whorls:">
-                        <xctk:DoubleUpDown Value="{Binding HelixWhorls}"
-                                           Minimum="1" />
-                    </HeaderedContentControl>
-                    <Button Content="Generate Coordinates"
-                            DockPanel.Dock="Bottom"
-                            Command="{Binding GenerateHelixCommand}" />
-
-                </StackPanel>
-            </StackPanel>
-        </GroupBox>
+            </GroupBox>
+        </DockPanel>
         <GridSplitter Grid.Row="0"
-                      Grid.Column="1" Background="DarkGray" Width="5"
+                      Grid.Column="1"
+                      Background="DarkGray"
+                      Width="5"
                       ResizeBehavior="PreviousAndNext" />
         <GroupBox Grid.Row="0"
                   Grid.Column="2"
@@ -92,16 +141,20 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ListView ItemsSource="{Binding PolarCoordinates}" />
+                <ListView ItemsSource="{Binding PolarCoordinates}" SelectedItem="{Binding CurrentPolarCoordinate}"/>
                 <StatusBar Grid.Row="1">
-                    <Button Content="Start sending" Command="{Binding StartSendingCommand}"></Button>
-                    <Button Content="Stop sending" Command="{Binding StopSendingCommand}"></Button>
+                    <Button Content="Start sending"
+                            Command="{Binding StartSendingCommand}" />
+                    <Button Content="Stop sending"
+                            Command="{Binding StopSendingCommand}" />
                 </StatusBar>
             </Grid>
         </GroupBox>
-        <GridSplitter Grid.Row="0" Background="DarkGray" Width="5"
+        <GridSplitter Grid.Row="0"
+                      Background="DarkGray"
+                      Width="5"
                       Grid.Column="3"
                       ResizeBehavior="PreviousAndNext" />
         <GroupBox Grid.Row="0"
@@ -110,15 +163,25 @@
             <oxy:Plot PlotType="Polar"
                       IsMouseWheelEnabled="True">
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding PolarCoordinates}"
+                    <oxy:LineSeries ItemsSource="{Binding PolarCoordinates}" 
+                                    DataFieldY="AngleNormalized" StrokeThickness="2" Color="DarkBlue"
+                                    DataFieldX="Radius" />
+                    <oxy:ScatterSeries ItemsSource="{Binding CurrentPoints}"  MarkerSize="3" MarkerFill="Transparent" MarkerType="Circle" MarkerStrokeThickness="1" MarkerStroke="Crimson"
                                     DataFieldY="AngleNormalized"
                                     DataFieldX="Radius" />
                 </oxy:Plot.Series>
-
+<oxy:Plot.Axes>
+    <oxy:MagnitudeAxis Minimum="0"></oxy:MagnitudeAxis>
+</oxy:Plot.Axes>
             </oxy:Plot>
         </GroupBox>
-        <GridSplitter Grid.Row="1"  Background="DarkGray" Height="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                      Grid.Column="0" Grid.ColumnSpan="5"
+        <GridSplitter Grid.Row="1"
+                      Background="DarkGray"
+                      Height="5"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="5"
                       ResizeBehavior="PreviousAndNext" />
         <GroupBox Grid.ColumnSpan="5"
                   Grid.Column="0"
@@ -126,6 +189,6 @@
                   Header="Communication Protocol">
             <TextBox Height="200" />
         </GroupBox>
-        
+
     </Grid>
 </Window>
