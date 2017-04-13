@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Windows;
 
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
+
+using TableCommandControl.Domain;
 
 namespace TableCommandControl.View.PatternGenerators {
     public class RectangularHelixGenerator :ViewModelBase, IPatternGenerator{
         private readonly IMainViewModel _mainViewModel;
 
-        protected RectangularHelixGenerator(IMainViewModel mainViewModel) {
+        public RectangularHelixGenerator(IMainViewModel mainViewModel) {
             if (mainViewModel == null) {
                 throw new ArgumentNullException(nameof(mainViewModel));
             }
@@ -59,10 +62,10 @@ namespace TableCommandControl.View.PatternGenerators {
         private RelayCommand _generateCommand;
 
         private void Generate() {
-            double currentAngle = 135.0;
-             double angleSteps = 360 * WhorlCount / _mainViewModel.Steps;
-            double radiusStep = (EndRadius - StartRadius) / WhorlCount + 1;
-
+            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(-50, 50)));
+            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(-50, -50)));
+            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(50, -50)));
+            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(50, 50)));
 
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 
 namespace TableCommandControl.Domain {
     public class PolarCoordinate {
@@ -35,8 +36,27 @@ namespace TableCommandControl.Domain {
         /// </summary>
         public double Radius { get; set; }
 
+        public static PolarCoordinate FromPoint(Point point) {
+            double radius = Math.Sqrt(Math.Pow(point.X, 2) + Math.Pow(point.Y, 2));
+            double atan = Math.Atan(point.Y / point.X);
+            double angle = Trigonometry.RadianToDegree(atan);
+            if (point.X<0 && point.Y>0) {
+                angle = 180 + Math.Abs(angle);
+            }
+            if (point.X<0 && point.Y<0) {
+                angle = 180 - Math.Abs(angle);
+            }
+            if (point.X>0 && point.Y<0) {
+                angle = Math.Abs(angle);
+            }
+            if (point.X>0 && point.Y>0) {
+                angle = 360-Math.Abs(angle);
+            }
+            return new PolarCoordinate(angle, radius);
+        }
+
         /// <summary>
-        /// Liefert die Polarkoordinate als string im Format Winkel;Radius
+        ///     Liefert die Polarkoordinate als string im Format Winkel;Radius
         /// </summary>
         /// <returns></returns>
         public string AsCommand() {
@@ -48,5 +68,7 @@ namespace TableCommandControl.Domain {
         public override string ToString() {
             return $"[{Angle:N2}°;{Radius:N2}mm]";
         }
+
+        
     }
 }

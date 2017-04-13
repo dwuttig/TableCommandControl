@@ -83,6 +83,27 @@
                 </Expander>
             </Border>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type generators:RectangularHelixGenerator}">
+            <Border BorderThickness="1"
+                    BorderBrush="Gray">
+                <Expander Header="Rectangle Helix Generator"
+                          IsExpanded="True"
+                          Background="LightSteelBlue"
+                          Style="{DynamicResource ExpanderStyle}">
+                    <StackPanel Margin="5">
+                        <HeaderedContentControl Header="Side length:">
+                            <xctk:IntegerUpDown Value="{Binding SideA}"
+                                                Minimum="0" />
+                        </HeaderedContentControl>
+                   
+                        <Button Content="Generate Coordinates"
+                                DockPanel.Dock="Bottom"
+                                Command="{Binding GenerateCommand}" />
+
+                    </StackPanel>
+                </Expander>
+            </Border>
+        </DataTemplate>
         <Style TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment"
                     Value="Stretch" />
@@ -115,7 +136,12 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DockPanel>
+        <DockPanel Grid.IsSharedSizeScope="True">
+            <HeaderedContentControl Header="Table radius [mm]:"
+                                    DockPanel.Dock="Top">
+                <xctk:IntegerUpDown Value="{Binding TableRadiusInMillimeters}"
+                                    Minimum="0" />
+            </HeaderedContentControl>
             <HeaderedContentControl Header="Steps:"
                                     DockPanel.Dock="Top">
                 <xctk:IntegerUpDown Value="{Binding Steps}"
@@ -123,7 +149,7 @@
             </HeaderedContentControl>
             <GroupBox Header="Generatoren">
                 <ListView ItemsSource="{Binding PatternGenerators}"
-                          Grid.IsSharedSizeScope="True"
+                          
                           Background="Transparent"
                           BorderThickness="0" />
 
@@ -163,15 +189,15 @@
             <oxy:Plot PlotType="Polar"
                       IsMouseWheelEnabled="True">
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding PolarCoordinates}" 
-                                    DataFieldY="AngleNormalized" StrokeThickness="2" Color="DarkBlue"
+                    <oxy:ScatterSeries ItemsSource="{Binding PolarCoordinates}" 
+                                    DataFieldY="AngleNormalized"  MarkerSize="2" MarkerType="Circle"
                                     DataFieldX="Radius" />
                     <oxy:ScatterSeries ItemsSource="{Binding CurrentPoints}"  MarkerSize="3" MarkerFill="Transparent" MarkerType="Circle" MarkerStrokeThickness="1" MarkerStroke="Crimson"
                                     DataFieldY="AngleNormalized"
                                     DataFieldX="Radius" />
                 </oxy:Plot.Series>
 <oxy:Plot.Axes>
-    <oxy:MagnitudeAxis Minimum="0"></oxy:MagnitudeAxis>
+    <oxy:MagnitudeAxis Minimum="0" Maximum="{Binding TableRadiusInMillimeters}"></oxy:MagnitudeAxis>
 </oxy:Plot.Axes>
             </oxy:Plot>
         </GroupBox>

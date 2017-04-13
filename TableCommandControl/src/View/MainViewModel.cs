@@ -37,6 +37,7 @@ namespace TableCommandControl.View {
             PatternGenerators.Add(new CircleGenerator(this));
             PatternGenerators.Add(new HelixGenerator(this));
             PatternGenerators.Add(new RectangleGenerator(this));
+            PatternGenerators.Add(new RectangularHelixGenerator(this));
         }
 
         /// <summary>
@@ -68,6 +69,18 @@ namespace TableCommandControl.View {
                 }
             }
         }
+
+        /// <summary>
+        ///    Liefert oder setzt die Tischgröße in Millimeter
+        /// </summary>
+        public int TableRadiusInMillimeters {
+            get { return _tableSizeInMillimeters; }
+            set { SetProperty(ref _tableSizeInMillimeters, value); }
+        }
+
+        private int _tableSizeInMillimeters = 300; 
+
+
 
         /// <summary>
         ///     Liefert oder setzt die Fehlernachricht. Diese wird benutzt um eine Fehlerbenachrichtigung für den Nutzer

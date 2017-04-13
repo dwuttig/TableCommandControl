@@ -58,5 +58,10 @@ namespace TableCommandControl.View {
         ///    Liefert oder setzt die Liste der aktuellen Punkte
         /// </summary>
         ObservableCollection<PolarCoordinate> CurrentPoints { get; set; }
+
+        /// <summary>
+        ///    Liefert oder setzt die Tischgröße in Millimeter
+        /// </summary>
+        int TableRadiusInMillimeters { get; set; }
     }
 }

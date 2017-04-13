@@ -108,6 +108,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="src\Domain\Trigonometry.cs" />
     <Compile Include="src\View\PatternGenerators\CircleGenerator.cs" />
     <Compile Include="src\View\PatternGenerators\HelixGenerator.cs" />
     <Compile Include="src\View\PatternGenerators\IPatternGenerator.cs" />

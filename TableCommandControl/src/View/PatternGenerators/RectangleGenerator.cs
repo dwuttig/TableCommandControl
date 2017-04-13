@@ -48,9 +48,7 @@ namespace TableCommandControl.View.PatternGenerators {
             return true;
         }
 
-        private double DegreeToRadian(double angle) {
-            return Math.PI * angle / 180.0;
-        }
+       
 
         private void Generate() {
             _mainViewModel.PolarCoordinates.Clear();
@@ -67,14 +65,7 @@ namespace TableCommandControl.View.PatternGenerators {
             return 1 / Math.Cos(angle);
         }
 
-        private double RadianToDegree(double angle) {
-            return angle * (180.0 / Math.PI);
-        }
 
-        private PolarCoordinate ToPolarCoordinate(Point point) {
-            double radius = Math.Sqrt(Math.Pow(point.X, 2) + Math.Pow(point.Y, 2));
-            double angle = RadianToDegree(Math.Sin(point.Y / radius));
-            return new PolarCoordinate(angle, radius);
-        }
+      
     }
 }

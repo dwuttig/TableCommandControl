@@ -10,18 +10,16 @@ namespace TableCommandControl.View {
     public class DMainViewModel : WindowViewModelBase, IMainViewModel {
         public DMainViewModel() {
             PolarCoordinates = new ObservableCollection<PolarCoordinate>();
-            PolarCoordinates.Add(new PolarCoordinate(1, 30));
-            PolarCoordinates.Add(new PolarCoordinate(10, 30));
-            PolarCoordinates.Add(new PolarCoordinate(20, 30));
-            PolarCoordinates.Add(new PolarCoordinate(30, 30));
-            PolarCoordinates.Add(new PolarCoordinate(40, 30));
-            PolarCoordinates.Add(new PolarCoordinate(45, 30));
+            PolarCoordinates.Add(new PolarCoordinate(45, 100));
+            PolarCoordinates.Add(new PolarCoordinate(135, 100));
+            PolarCoordinates.Add(new PolarCoordinate(225, 100));
+            PolarCoordinates.Add(new PolarCoordinate(315, 100));
             PatternGenerators = new ObservableCollection<IPatternGenerator>();
             PatternGenerators.Add(new CircleGenerator(this));
             PatternGenerators.Add(new HelixGenerator(this));
                 PatternGenerators.Add(new RectangleGenerator(this));
             CurrentPoints = new ObservableCollection<PolarCoordinate>();
-            CurrentPoints.Add(new PolarCoordinate(20, 30));
+            CurrentPoints.Add(new PolarCoordinate(45, 100));
         }
 
         /// <summary>
@@ -74,5 +72,10 @@ namespace TableCommandControl.View {
         ///    Liefert oder setzt die Liste der aktuellen Punkte
         /// </summary>
         public ObservableCollection<PolarCoordinate> CurrentPoints { get; set; }
+
+        /// <summary>
+        ///    Liefert oder setzt die Tischgröße in Millimeter
+        /// </summary>
+        public int TableRadiusInMillimeters { get; set; } = 300;
     }
 }
