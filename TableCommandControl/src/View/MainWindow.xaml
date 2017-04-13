@@ -189,8 +189,11 @@
             <oxy:Plot PlotType="Polar"
                       IsMouseWheelEnabled="True">
                 <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding PolarCoordinates}" 
+                                    DataFieldY="AngleNormalized" Color="DarkBlue" StrokeThickness="1"
+                                    DataFieldX="Radius" />
                     <oxy:ScatterSeries ItemsSource="{Binding PolarCoordinates}" 
-                                    DataFieldY="AngleNormalized"  MarkerSize="2" MarkerType="Circle"
+                                    DataFieldY="AngleNormalized"  MarkerSize="2" MarkerType="Circle" MarkerFill="DarkBlue"
                                     DataFieldX="Radius" />
                     <oxy:ScatterSeries ItemsSource="{Binding CurrentPoints}"  MarkerSize="3" MarkerFill="Transparent" MarkerType="Circle" MarkerStrokeThickness="1" MarkerStroke="Crimson"
                                     DataFieldY="AngleNormalized"
@@ -198,6 +201,7 @@
                 </oxy:Plot.Series>
 <oxy:Plot.Axes>
     <oxy:MagnitudeAxis Minimum="0" Maximum="{Binding TableRadiusInMillimeters}"></oxy:MagnitudeAxis>
+    <oxy:AngleAxis Minimum="0" Maximum="360"></oxy:AngleAxis>
 </oxy:Plot.Axes>
             </oxy:Plot>
         </GroupBox>
