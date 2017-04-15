@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-
+using System.Windows.Controls;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
@@ -63,5 +63,17 @@ namespace TableCommandControl.View {
         ///    Liefert oder setzt die Tischgröße in Millimeter
         /// </summary>
         int TableRadiusInMillimeters { get; set; }
+
+        /// <summary>
+        ///     Liefert oder setzt den RadiusFactor
+        /// </summary>
+        double RadiusFactor { get; set; }
+
+        /// <summary>
+        ///     Liefert oder setzt den AngleFactor
+        /// </summary>
+        double AngleFactor { get; set; }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace TableCommandControl.View {
     /// <summary>
@@ -7,6 +8,9 @@ namespace TableCommandControl.View {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+
+            Console.SetOut(new ListBoxWriter(ListBox));
+            ListBox.Items.Add("Test");
         }
     }
 }

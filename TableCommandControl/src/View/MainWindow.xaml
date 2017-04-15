@@ -129,7 +129,7 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -145,6 +145,16 @@
             <HeaderedContentControl Header="Steps:"
                                     DockPanel.Dock="Top">
                 <xctk:IntegerUpDown Value="{Binding Steps}"
+                                    Minimum="0" />
+            </HeaderedContentControl>  
+            <HeaderedContentControl Header="Angle Factor:"
+                                    DockPanel.Dock="Top">
+                <xctk:DoubleUpDown Value="{Binding AngleFactor}" Increment="0.1"
+                                    Minimum="0" />
+            </HeaderedContentControl>    
+            <HeaderedContentControl Header="Radius Factor:"
+                                    DockPanel.Dock="Top">
+                <xctk:DoubleUpDown Value="{Binding RadiusFactor}" Increment="0.1"
                                     Minimum="0" />
             </HeaderedContentControl>
             <GroupBox Header="Generatoren">
@@ -169,7 +179,7 @@
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ListView ItemsSource="{Binding PolarCoordinates}" SelectedItem="{Binding CurrentPolarCoordinate}"/>
+                <ListView ItemsSource="{Binding PolarCoordinates}" SelectedItem="{Binding CurrentPolarCoordinate, Mode=TwoWay}"/>
                 <StatusBar Grid.Row="1">
                     <Button Content="Start sending"
                             Command="{Binding StartSendingCommand}" />
@@ -200,8 +210,8 @@
                                     DataFieldX="Radius" />
                 </oxy:Plot.Series>
 <oxy:Plot.Axes>
-    <oxy:MagnitudeAxis Minimum="0" Maximum="{Binding TableRadiusInMillimeters}"></oxy:MagnitudeAxis>
-    <oxy:AngleAxis Minimum="0" Maximum="360"></oxy:AngleAxis>
+    <oxy:MagnitudeAxis Minimum="0" Maximum="{Binding TableRadiusInMillimeters}" />
+    <oxy:AngleAxis Minimum="0" Maximum="360" />
 </oxy:Plot.Axes>
             </oxy:Plot>
         </GroupBox>
@@ -217,7 +227,13 @@
                   Grid.Column="0"
                   Grid.Row="2"
                   Header="Communication Protocol">
-            <TextBox Height="200" />
+            <ListBox Name="ListBox" Height="200" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </GroupBox>
 
     </Grid>

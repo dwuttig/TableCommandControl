@@ -58,9 +58,11 @@ namespace TableCommandControl.Domain {
         /// <summary>
         ///     Liefert die Polarkoordinate als string im Format Winkel;Radius
         /// </summary>
+        /// <param name="angleFactor"></param>
+        /// <param name="polarRadiusFactor"></param>
         /// <returns></returns>
-        public string AsCommand() {
-            return $"{Angle:N1};{Radius:N1}";
+        public string AsCommand(double angleFactor, double polarRadiusFactor) {
+            return $"{(int)(Angle*angleFactor)};{(int)(Radius*polarRadiusFactor)}";
         }
 
         /// <summary>Gibt eine Zeichenfolge zurück, die das aktuelle Objekt darstellt.</summary>

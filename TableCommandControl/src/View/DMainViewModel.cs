@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-
+using System.Windows.Controls;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
-
 using TableCommandControl.Domain;
 using TableCommandControl.View.PatternGenerators;
 
@@ -17,7 +16,7 @@ namespace TableCommandControl.View {
             PatternGenerators = new ObservableCollection<IPatternGenerator>();
             PatternGenerators.Add(new CircleGenerator(this));
             PatternGenerators.Add(new HelixGenerator(this));
-                PatternGenerators.Add(new RectangleGenerator(this));
+            PatternGenerators.Add(new RectangleGenerator(this));
             CurrentPoints = new ObservableCollection<PolarCoordinate>();
             CurrentPoints.Add(new PolarCoordinate(45, 100));
         }
@@ -69,13 +68,25 @@ namespace TableCommandControl.View {
         public RelayCommand StopSendingCommand { get; }
 
         /// <summary>
-        ///    Liefert oder setzt die Liste der aktuellen Punkte
+        ///     Liefert oder setzt die Liste der aktuellen Punkte
         /// </summary>
         public ObservableCollection<PolarCoordinate> CurrentPoints { get; set; }
 
         /// <summary>
-        ///    Liefert oder setzt die Tischgröße in Millimeter
+        ///     Liefert oder setzt die Tischgröße in Millimeter
         /// </summary>
         public int TableRadiusInMillimeters { get; set; } = 300;
+
+        /// <summary>
+        ///     Liefert oder setzt den RadiusFactor
+        /// </summary>
+        public double RadiusFactor { get; set; }
+
+        /// <summary>
+        ///     Liefert oder setzt den AngleFactor
+        /// </summary>
+        public double AngleFactor { get; set; }
+
+        public ListBox ListBox { get; set; }
     }
 }

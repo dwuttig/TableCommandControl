@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-
+using System.Windows.Controls;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
-
 using TableCommandControl.Communication;
 using TableCommandControl.Domain;
 using TableCommandControl.View.PatternGenerators;
@@ -12,6 +11,8 @@ using TableCommandControl.View.PatternGenerators;
 namespace TableCommandControl.View {
     public class MainViewModel : WindowViewModelBase, IMainViewModel {
         private readonly ArduinoProtocolLayer _arduinoProtocolLayer = new ArduinoProtocolLayer();
+
+        private double _angleFactor=1;
 
         private string _communicationProtocolText = string.Empty;
 
@@ -23,9 +24,12 @@ namespace TableCommandControl.View {
 
         private string _infoMessage;
 
-        private ObservableCollection<IPatternGenerator> _patternGenerators = new ObservableCollection<IPatternGenerator>();
+        private ObservableCollection<IPatternGenerator> _patternGenerators =
+            new ObservableCollection<IPatternGenerator>();
 
         private ObservableCollection<PolarCoordinate> _polarCoordinates = new ObservableCollection<PolarCoordinate>();
+
+        private double _radiusFactor=2;
 
         private RelayCommand _startSendingCommand;
 
@@ -33,17 +37,23 @@ namespace TableCommandControl.View {
 
         private RelayCommand _stopSendingCommand;
 
+        private int _tableSizeInMillimeters = 300;
+
         public MainViewModel() {
+            _arduinoProtocolLayer.Initialize();
             PatternGenerators.Add(new CircleGenerator(this));
             PatternGenerators.Add(new HelixGenerator(this));
             PatternGenerators.Add(new RectangleGenerator(this));
             PatternGenerators.Add(new RectangularHelixGenerator(this));
+           
         }
+
 
         /// <summary>
         ///     Liefert oder setzt den Text der Protokollkommunikation.
         /// </summary>
-        public string CommunicationProtocolText {
+        public string CommunicationProtocolText
+        {
             get { return _communicationProtocolText; }
             set { SetProperty(ref _communicationProtocolText, value); }
         }
@@ -51,7 +61,8 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die Liste der aktuellen Punkte
         /// </summary>
-        public ObservableCollection<PolarCoordinate> CurrentPoints {
+        public ObservableCollection<PolarCoordinate> CurrentPoints
+        {
             get { return _currentPoints; }
             set { SetProperty(ref _currentPoints, value); }
         }
@@ -59,9 +70,11 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die aktuelle Polarkoordinate
         /// </summary>
-        public PolarCoordinate CurrentPolarCoordinate {
+        public PolarCoordinate CurrentPolarCoordinate
+        {
             get { return _currentPolarCoordinate; }
-            set {
+            set
+            {
                 SetProperty(ref _currentPolarCoordinate, value);
                 CurrentPoints.Clear();
                 if (_currentPolarCoordinate != null) {
@@ -71,22 +84,21 @@ namespace TableCommandControl.View {
         }
 
         /// <summary>
-        ///    Liefert oder setzt die Tischgröße in Millimeter
+        ///     Liefert oder setzt die Tischgröße in Millimeter
         /// </summary>
-        public int TableRadiusInMillimeters {
+        public int TableRadiusInMillimeters
+        {
             get { return _tableSizeInMillimeters; }
             set { SetProperty(ref _tableSizeInMillimeters, value); }
         }
-
-        private int _tableSizeInMillimeters = 300; 
-
 
 
         /// <summary>
         ///     Liefert oder setzt die Fehlernachricht. Diese wird benutzt um eine Fehlerbenachrichtigung für den Nutzer
         ///     anzuzeigen.
         /// </summary>
-        public string ErrorMessage {
+        public string ErrorMessage
+        {
             get { return _errorMessage; }
             set { SetProperty(ref _errorMessage, value); }
         }
@@ -94,7 +106,8 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die Info-Nachricht. Dies kann benutzt werden um dem Nutzer Hinweise zu geben.
         /// </summary>
-        public string InfoMessage {
+        public string InfoMessage
+        {
             get { return _infoMessage; }
             set { SetProperty(ref _infoMessage, value); }
         }
@@ -102,7 +115,8 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die Liste der Mustergeneratoren
         /// </summary>
-        public ObservableCollection<IPatternGenerator> PatternGenerators {
+        public ObservableCollection<IPatternGenerator> PatternGenerators
+        {
             get { return _patternGenerators; }
             set { SetProperty(ref _patternGenerators, value); }
         }
@@ -110,7 +124,8 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die zu senden Polarkoordinaten.
         /// </summary>
-        public ObservableCollection<PolarCoordinate> PolarCoordinates {
+        public ObservableCollection<PolarCoordinate> PolarCoordinates
+        {
             get { return _polarCoordinates; }
             set { SetProperty(ref _polarCoordinates, value); }
         }
@@ -118,8 +133,10 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert den Command zum Start des Sendens der Koordinaten
         /// </summary>
-        public RelayCommand StartSendingCommand {
-            get {
+        public RelayCommand StartSendingCommand
+        {
+            get
+            {
                 if (_startSendingCommand == null) {
                     _startSendingCommand = new RelayCommand(StartSending);
                 }
@@ -131,16 +148,46 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die Schrittanzahl beim Generieren der Pfade.
         /// </summary>
-        public int Steps {
+        public int Steps
+        {
             get { return _steps; }
             set { SetProperty(ref _steps, value); }
+        }
+
+
+        /// <summary>
+        ///     Liefert oder setzt den RadiusFactor
+        /// </summary>
+        public double RadiusFactor
+        {
+            get { return _radiusFactor; }
+            set
+            {
+                SetProperty(ref _radiusFactor, value);
+                _arduinoProtocolLayer.SetPolarRadiusFactor(_radiusFactor);
+            }
+        }
+
+        /// <summary>
+        ///     Liefert oder setzt den AngleFactor
+        /// </summary>
+        public double AngleFactor
+        {
+            get { return _angleFactor; }
+            set
+            {
+                SetProperty(ref _angleFactor, value);
+                _arduinoProtocolLayer.SetAngleFactor(_angleFactor);
+            }
         }
 
         /// <summary>
         ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
         /// </summary>
-        public RelayCommand StopSendingCommand {
-            get {
+        public RelayCommand StopSendingCommand
+        {
+            get
+            {
                 if (_stopSendingCommand == null) {
                     _stopSendingCommand = new RelayCommand(StopSending);
                 }
@@ -176,22 +223,30 @@ namespace TableCommandControl.View {
         private void HandleDataAcknowledge(object sender, EventArgs e) {
             if (CurrentPolarCoordinate != null) {
                 int currentIndex = PolarCoordinates.IndexOf(CurrentPolarCoordinate);
-                if (currentIndex < PolarCoordinates.Count) {
+                if (currentIndex < PolarCoordinates.Count-1) {
                     CurrentPolarCoordinate = PolarCoordinates[currentIndex + 1];
-                } else {
+                }
+                else {
                     CurrentPolarCoordinate = PolarCoordinates.FirstOrDefault();
                 }
             }
             if (CurrentPolarCoordinate != null) {
                 _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate);
-                CommunicationProtocolText += $"Sent: {CurrentPolarCoordinate}";
-                CommunicationProtocolText += Environment.NewLine;
+                Console.WriteLine($"Sent: {CurrentPolarCoordinate}");
+                
             }
         }
 
         private void StartSending() {
             _arduinoProtocolLayer.DataAcknowledgeReceived += HandleDataAcknowledge;
             _arduinoProtocolLayer.CommunicationErrorOccured += HandleCommunicationError;
+            if (CurrentPolarCoordinate == null) {
+                CurrentPolarCoordinate = PolarCoordinates.FirstOrDefault();
+            }
+            if (CurrentPolarCoordinate != null) {
+                _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate);
+                Console.WriteLine($"Sent: {CurrentPolarCoordinate}");
+            }
         }
 
         private void StopSending() {
