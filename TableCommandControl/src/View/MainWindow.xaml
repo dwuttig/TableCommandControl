@@ -227,12 +227,8 @@
                   Grid.Column="0"
                   Grid.Row="2"
                   Header="Communication Protocol">
-            <ListBox Name="ListBox" Height="200" >
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}"></TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
+            <ListBox  Height="200" ItemsSource="{Binding CommandHistoryQueue.Queue}" >
+           
             </ListBox>
         </GroupBox>
 

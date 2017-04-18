@@ -29,17 +29,29 @@ namespace TableCommandControl.Communication {
         ///     Initialisiert den ProtocolLayer und öffnet den SerialPort;
         /// </summary>
         public void Initialize() {
-            _serialPort.DataReceived += HandleDataReceived;
-            _serialPort.Open();
+            try {
+                _serialPort.DataReceived += HandleDataReceived;
+                _serialPort.Open();
+            }
+            catch (Exception e) {
+
+                OnCommunicationErrorOccured(e);
+            }
         }
 
         public void SendpolarCoordinate(PolarCoordinate polarCoordinate) {
-            if (!_serialPort.IsOpen) {
-                _serialPort.Open();
+            try {
+                if (!_serialPort.IsOpen) {
+                    _serialPort.Open();
+                }
+                string asCommand = polarCoordinate.AsCommand(_angleFactor, _polarRadiusFactor);
+
+                _serialPort.Write(asCommand);
             }
-            string asCommand = polarCoordinate.AsCommand(_angleFactor, _polarRadiusFactor);
-           
-            _serialPort.Write(asCommand);
+            catch (Exception e) {
+
+                OnCommunicationErrorOccured(e);
+            }
         }
 
         public void SetPolarRadiusFactor(double radiusFactor) {

@@ -1,17 +1,28 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Controls;
+
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
+using TableCommandControl.Collections;
 using TableCommandControl.Domain;
 using TableCommandControl.View.PatternGenerators;
 
 namespace TableCommandControl.View {
     public interface IMainViewModel : IWindowViewModelBase {
         /// <summary>
-        ///     Liefert oder setzt den Text der Protokollkommunikation.
+        ///     Liefert oder setzt den AngleFactor
         /// </summary>
-        string CommunicationProtocolText { get; set; }
+        double AngleFactor { get; set; }
+
+        /// <summary>
+        ///     Liefert oder setzt die Queue für das Sendeprotokoll
+        /// </summary>
+        ObservableQueue<string> CommandHistoryQueue { get; set; }
+
+        /// <summary>
+        ///     Liefert oder setzt die Liste der aktuellen Punkte
+        /// </summary>
+        ObservableCollection<PolarCoordinate> CurrentPoints { get; set; }
 
         /// <summary>
         ///     Liefert oder setzt die aktuelle Polarkoordinate
@@ -40,6 +51,11 @@ namespace TableCommandControl.View {
         ObservableCollection<PolarCoordinate> PolarCoordinates { get; set; }
 
         /// <summary>
+        ///     Liefert oder setzt den RadiusFactor
+        /// </summary>
+        double RadiusFactor { get; set; }
+
+        /// <summary>
         ///     Liefert den Command zum Start des Sendens der Koordinaten
         /// </summary>
         RelayCommand StartSendingCommand { get; }
@@ -55,25 +71,8 @@ namespace TableCommandControl.View {
         RelayCommand StopSendingCommand { get; }
 
         /// <summary>
-        ///    Liefert oder setzt die Liste der aktuellen Punkte
-        /// </summary>
-        ObservableCollection<PolarCoordinate> CurrentPoints { get; set; }
-
-        /// <summary>
-        ///    Liefert oder setzt die Tischgröße in Millimeter
+        ///     Liefert oder setzt die Tischgröße in Millimeter
         /// </summary>
         int TableRadiusInMillimeters { get; set; }
-
-        /// <summary>
-        ///     Liefert oder setzt den RadiusFactor
-        /// </summary>
-        double RadiusFactor { get; set; }
-
-        /// <summary>
-        ///     Liefert oder setzt den AngleFactor
-        /// </summary>
-        double AngleFactor { get; set; }
-
-
     }
 }

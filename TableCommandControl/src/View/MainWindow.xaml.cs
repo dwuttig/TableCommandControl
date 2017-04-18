@@ -8,9 +8,6 @@ namespace TableCommandControl.View {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
-
-            Console.SetOut(new ListBoxWriter(ListBox));
-            ListBox.Items.Add("Test");
         }
     }
 }
