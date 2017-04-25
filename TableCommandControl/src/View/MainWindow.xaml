@@ -137,6 +137,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <DockPanel Grid.IsSharedSizeScope="True">
+            <HeaderedContentControl Header="Port:" DockPanel.Dock="Top">
+                <ComboBox SelectedItem="{Binding Port}" ItemsSource="{Binding Ports}"></ComboBox>
+            </HeaderedContentControl>
             <HeaderedContentControl Header="Table radius [mm]:"
                                     DockPanel.Dock="Top">
                 <xctk:IntegerUpDown Value="{Binding TableRadiusInMillimeters}"

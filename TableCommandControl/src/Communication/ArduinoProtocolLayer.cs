@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO.Ports;
 using System.Windows;
 using TableCommandControl.Domain;
@@ -11,9 +10,17 @@ namespace TableCommandControl.Communication {
     public class ArduinoProtocolLayer {
         private const string ACK = "A";
         private const string ERROR = "E";
-        private readonly SerialPort _serialPort = new SerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
         private double _angleFactor = 1;
         private double _polarRadiusFactor = 1;
+        private SerialPort _serialPort = new SerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
+
+        /// <summary>
+        ///     Setzt den Port neu
+        /// </summary>
+        /// <param name="port"></param>
+        public void SetPort(string port) {
+            _serialPort = new SerialPort(port, 115200, Parity.None, 8, StopBits.One);
+        }
 
         /// <summary>
         ///     Wird gefeuert wenn eine Exception aufgetreten ist
@@ -29,8 +36,11 @@ namespace TableCommandControl.Communication {
         ///     Initialisiert den ProtocolLayer und öffnet den SerialPort;
         /// </summary>
         public void Initialize() {
-            _serialPort.DataReceived += HandleDataReceived;
-            _serialPort.Open();
+            if (!_serialPort.IsOpen)
+            {
+                _serialPort.DataReceived += HandleDataReceived;
+                _serialPort.Open(); 
+            }
         }
 
         public void SendpolarCoordinate(PolarCoordinate polarCoordinate) {
@@ -38,13 +48,14 @@ namespace TableCommandControl.Communication {
                 _serialPort.Open();
             }
             string asCommand = polarCoordinate.AsCommand(_angleFactor, _polarRadiusFactor);
-           
+
             _serialPort.Write(asCommand);
         }
 
         public void SetPolarRadiusFactor(double radiusFactor) {
             _polarRadiusFactor = radiusFactor;
         }
+
         public void SetAngleFactor(double angleFactor) {
             _angleFactor = angleFactor;
         }

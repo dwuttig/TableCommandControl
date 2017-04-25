@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Controls;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 using TableCommandControl.Communication;
@@ -12,7 +12,7 @@ namespace TableCommandControl.View {
     public class MainViewModel : WindowViewModelBase, IMainViewModel {
         private readonly ArduinoProtocolLayer _arduinoProtocolLayer = new ArduinoProtocolLayer();
 
-        private double _angleFactor=1;
+        private double _angleFactor = 1;
 
         private string _communicationProtocolText = string.Empty;
 
@@ -28,8 +28,9 @@ namespace TableCommandControl.View {
             new ObservableCollection<IPatternGenerator>();
 
         private ObservableCollection<PolarCoordinate> _polarCoordinates = new ObservableCollection<PolarCoordinate>();
+        private string _port = "COM6";
 
-        private double _radiusFactor=2;
+        private double _radiusFactor = 2;
 
         private RelayCommand _startSendingCommand;
 
@@ -40,13 +41,38 @@ namespace TableCommandControl.View {
         private int _tableSizeInMillimeters = 300;
 
         public MainViewModel() {
-            _arduinoProtocolLayer.Initialize();
+            try
+            {
+                _arduinoProtocolLayer.Initialize();
+            }
+            catch (Exception e) {
+
+                CommunicationProtocolText += e.Message;
+            }
             PatternGenerators.Add(new CircleGenerator(this));
             PatternGenerators.Add(new HelixGenerator(this));
             PatternGenerators.Add(new RectangleGenerator(this));
             PatternGenerators.Add(new RectangularHelixGenerator(this));
-           
+            Ports = new List<string> {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
         }
+
+        /// <summary>
+        ///     Setzt den Port
+        /// </summary>
+        public string Port
+        {
+            get { return _port; }
+            set
+            {
+                _port = value;
+                _arduinoProtocolLayer.SetPort(_port);
+            }
+        }
+
+        /// <summary>
+        ///     Setzt die Liste der Ports
+        /// </summary>
+        public IList<string> Ports { get; set; }
 
 
         /// <summary>
@@ -223,7 +249,7 @@ namespace TableCommandControl.View {
         private void HandleDataAcknowledge(object sender, EventArgs e) {
             if (CurrentPolarCoordinate != null) {
                 int currentIndex = PolarCoordinates.IndexOf(CurrentPolarCoordinate);
-                if (currentIndex < PolarCoordinates.Count-1) {
+                if (currentIndex < PolarCoordinates.Count - 1) {
                     CurrentPolarCoordinate = PolarCoordinates[currentIndex + 1];
                 }
                 else {
@@ -233,11 +259,11 @@ namespace TableCommandControl.View {
             if (CurrentPolarCoordinate != null) {
                 _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate);
                 Console.WriteLine($"Sent: {CurrentPolarCoordinate}");
-                
             }
         }
 
         private void StartSending() {
+            _arduinoProtocolLayer.Initialize();
             _arduinoProtocolLayer.DataAcknowledgeReceived += HandleDataAcknowledge;
             _arduinoProtocolLayer.CommunicationErrorOccured += HandleCommunicationError;
             if (CurrentPolarCoordinate == null) {

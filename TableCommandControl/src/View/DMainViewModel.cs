@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
@@ -86,6 +87,13 @@ namespace TableCommandControl.View {
         ///     Liefert oder setzt den AngleFactor
         /// </summary>
         public double AngleFactor { get; set; }
+
+        public string Port { get; set; }
+
+        /// <summary>
+        ///     Setzt die Liste der Ports
+        /// </summary>
+        public IList<string> Ports { get; set; }
 
         public ListBox ListBox { get; set; }
     }
