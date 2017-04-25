@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
+
+using TableCommandControl.Collections;
 using TableCommandControl.Domain;
 using TableCommandControl.View.PatternGenerators;
 
@@ -18,14 +20,11 @@ namespace TableCommandControl.View {
             PatternGenerators.Add(new CircleGenerator(this));
             PatternGenerators.Add(new HelixGenerator(this));
             PatternGenerators.Add(new RectangleGenerator(this));
+            PatternGenerators.Add(new RectangularHelixGenerator(this));
             CurrentPoints = new ObservableCollection<PolarCoordinate>();
-            CurrentPoints.Add(new PolarCoordinate(45, 100));
+            CurrentPoints.Add(new PolarCoordinate(45, 100));CommandHistoryQueue = new ObservableQueue<string>(1);
+            CommandHistoryQueue.Enqueue("Test");
         }
-
-        /// <summary>
-        ///     Liefert oder setzt den Text der Protokollkommunikation.
-        /// </summary>
-        public string CommunicationProtocolText { get; set; }
 
         /// <summary>
         ///     Liefert oder setzt die aktuelle Polarkoordinate
@@ -67,6 +66,11 @@ namespace TableCommandControl.View {
         ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
         /// </summary>
         public RelayCommand StopSendingCommand { get; }
+
+        /// <summary>
+        ///     Liefert oder setzt die Queue für das Sendeprotokoll
+        /// </summary>
+        public ObservableQueue<string> CommandHistoryQueue { get; set; }
 
         /// <summary>
         ///     Liefert oder setzt die Liste der aktuellen Punkte

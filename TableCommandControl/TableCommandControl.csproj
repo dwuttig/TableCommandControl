@@ -108,6 +108,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="src\Collections\ObservableQueue.cs" />
     <Compile Include="src\Domain\Trigonometry.cs" />
     <Compile Include="src\View\ListBoxWriter.cs" />
     <Compile Include="src\View\PatternGenerators\CircleGenerator.cs" />

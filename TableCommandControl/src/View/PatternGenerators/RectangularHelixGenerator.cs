@@ -1,14 +1,21 @@
 ﻿using System;
-using System.Windows;
-
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
-
 using TableCommandControl.Domain;
 
 namespace TableCommandControl.View.PatternGenerators {
-    public class RectangularHelixGenerator :ViewModelBase, IPatternGenerator{
+    public class RectangularHelixGenerator : ViewModelBase, IPatternGenerator {
         private readonly IMainViewModel _mainViewModel;
+
+        private int _endLength = 10;
+
+        private RelayCommand _generateCommand;
+
+        private int _startLength = 300;
+
+        private double _whorlCount = 10;
 
         public RectangularHelixGenerator(IMainViewModel mainViewModel) {
             if (mainViewModel == null) {
@@ -18,37 +25,31 @@ namespace TableCommandControl.View.PatternGenerators {
         }
 
         /// <summary>
-        ///    Liefert oder setzt den StartRadius
+        ///     Liefert oder setzt den StartRadius
         /// </summary>
-        public int StartRadius {
-            get { return _startRadius; }
-            set { SetProperty(ref _startRadius, value); }
+        public int StartLength {
+            get { return _startLength; }
+            set { SetProperty(ref _startLength, value); }
         }
 
-        private int _startRadius = 10;
-
         /// <summary>
-        ///    Liefert oder setzt den Endradius
+        ///     Liefert oder setzt den Endradius
         /// </summary>
-        public int EndRadius {
-            get { return _endRadius; }
-            set { SetProperty(ref _endRadius, value); }
+        public int EndLength {
+            get { return _endLength; }
+            set { SetProperty(ref _endLength, value); }
         }
 
-        private int _endRadius = 0;
-
         /// <summary>
-        ///    Liefert oder setzt die Anzahl der Windungen.
+        ///     Liefert oder setzt die Anzahl der Windungen.
         /// </summary>
         public double WhorlCount {
             get { return _whorlCount; }
             set { SetProperty(ref _whorlCount, value); }
         }
 
-        private double _whorlCount = 1;
-
         /// <summary>
-        /// Liefert den Command zum generieren des Pfads
+        ///     Liefert den Command zum generieren des Pfads
         /// </summary>
         public RelayCommand GenerateCommand {
             get {
@@ -59,24 +60,34 @@ namespace TableCommandControl.View.PatternGenerators {
             }
         }
 
-        private RelayCommand _generateCommand;
-
         private void Generate() {
-            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(-50, 50)));
-            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(-50, -50)));
-            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(50, -50)));
-            _mainViewModel.PolarCoordinates.Add(PolarCoordinate.FromPoint(new Point(50, 50)));
+            double currentRadius = StartLength;
+            double radiusStepSize = (StartLength - EndLength) / WhorlCount;
+            _mainViewModel.PolarCoordinates.Clear();
+            double currentAngle = 0;
+            double angleSteps = 360.0 / _mainViewModel.Steps;
+            IList<PolarCoordinate> coordinates = new List<PolarCoordinate>();
 
+
+            for (int w = 0; w < WhorlCount; w++) {
+                for (int i = 0; i < _mainViewModel.Steps + 1; i++) {
+                    coordinates.Add(
+                        new PolarCoordinate(currentAngle, GetRadiusFroAngle(currentAngle) * currentRadius / 2));
+                    currentAngle += angleSteps;
+                }
+                currentRadius -= radiusStepSize;
+            }
+
+            _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(coordinates);
+        }
+
+        private double GetRadiusFroAngle(double angle) {
+            angle = ((angle + 45) % 90 - 45) / 180 * Math.PI;
+            return 1 / Math.Cos(angle);
         }
 
         private bool CanGenerate() {
             return true;
         }
-
-
-
-
-
-
     }
 }
