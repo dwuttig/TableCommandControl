@@ -44,12 +44,18 @@ namespace TableCommandControl.View {
         private int _tableSizeInMillimeters = 300;
 
         public MainViewModel() {
-            _arduinoProtocolLayer.Initialize();
-            PatternGenerators.Add(new CircleGenerator(this));
-            PatternGenerators.Add(new HelixGenerator(this));
-            PatternGenerators.Add(new RectangleGenerator(this));
-            PatternGenerators.Add(new RectangularHelixGenerator(this));
-            CommandHistoryQueue.Enqueue("Started...");
+            try {
+                _arduinoProtocolLayer.Initialize();
+                PatternGenerators.Add(new CircleGenerator(this));
+                PatternGenerators.Add(new HelixGenerator(this));
+                PatternGenerators.Add(new RectangleGenerator(this));
+                PatternGenerators.Add(new RectangularHelixGenerator(this));
+                CommandHistoryQueue.Enqueue("Started...");
+            }
+            catch (Exception e) {
+
+               CommandHistoryQueue.Enqueue("Init error...");
+            }
         }
 
         /// <summary>
