@@ -6,6 +6,8 @@ using System.Linq;
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
+using Common.Logging;
+
 using TableCommandControl.Collections;
 using TableCommandControl.Communication;
 using TableCommandControl.Domain;
@@ -19,7 +21,6 @@ namespace TableCommandControl.View {
 
         private ObservableQueue<string> _commandHistoryQueue = new ObservableQueue<string>(10);
 
-
         private string _communicationProtocolText = string.Empty;
 
         private ObservableCollection<PolarCoordinate> _currentPoints = new ObservableCollection<PolarCoordinate>();
@@ -30,62 +31,30 @@ namespace TableCommandControl.View {
 
         private string _infoMessage;
 
-        private ObservableCollection<IPatternGenerator> _patternGenerators =
-                new ObservableCollection<IPatternGenerator>();
+        private ObservableCollection<IPatternGenerator> _patternGenerators = new ObservableCollection<IPatternGenerator>();
 
         private ObservableCollection<PolarCoordinate> _polarCoordinates = new ObservableCollection<PolarCoordinate>();
         private string _port = "COM6";
-
         private double _radiusFactor = 2;
-
         private RelayCommand _startSendingCommand;
-
         private int _steps = 200;
-
         private RelayCommand _stopSendingCommand;
-
         private int _tableSizeInMillimeters = 300;
+        private readonly ILog _logger = LogManager.GetLogger(typeof(MainViewModel));
 
         public MainViewModel() {
-
-            
-            try
-            {Ports = new List<string> {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
+            try {
+                Ports = new List<string> { "COM1", "COM2", "COM3", "COM4", "COM5", "COM6" };
                 _arduinoProtocolLayer.Initialize();
                 PatternGenerators.Add(new CircleGenerator(this));
                 PatternGenerators.Add(new HelixGenerator(this));
                 PatternGenerators.Add(new RectangleGenerator(this));
                 PatternGenerators.Add(new RectangularHelixGenerator(this));
                 CommandHistoryQueue.Enqueue("Started...");
-            }
-            catch (Exception e)
-            {
-
+            } catch (Exception e) {
                 CommandHistoryQueue.Enqueue("Init error...");
             }
         }
-
-        /// <summary>
-        ///     Setzt den Port
-        /// </summary>
-        public string Port
-        {
-            get { return _port; }
-            set
-            {
-                _port = value;
-                _arduinoProtocolLayer.SetPort(_port);
-            }
-        }
-
-        /// <summary>
-        ///     Setzt die Liste der Ports
-        /// </summary>
-        public IList<string> Ports { get; set; }
-
-
-
-        
 
         /// <summary>
         ///     Liefert oder setzt den AngleFactor
@@ -97,7 +66,6 @@ namespace TableCommandControl.View {
                 _arduinoProtocolLayer.SetAngleFactor(_angleFactor);
             }
         }
-
 
         /// <summary>
         ///     Liefert oder setzt die Queue für das Sendeprotokoll
@@ -161,6 +129,22 @@ namespace TableCommandControl.View {
             get { return _polarCoordinates; }
             set { SetProperty(ref _polarCoordinates, value); }
         }
+
+        /// <summary>
+        ///     Setzt den Port
+        /// </summary>
+        public string Port {
+            get { return _port; }
+            set {
+                _port = value;
+                _arduinoProtocolLayer.SetPort(_port);
+            }
+        }
+
+        /// <summary>
+        ///     Setzt die Liste der Ports
+        /// </summary>
+        public IList<string> Ports { get; set; }
 
         /// <summary>
         ///     Liefert oder setzt den RadiusFactor
@@ -234,9 +218,11 @@ namespace TableCommandControl.View {
         }
 
         private void HandleCommunicationError(object sender, Exception e) {
+            _logger.Error(e);
             _arduinoProtocolLayer.DataAcknowledgeReceived -= HandleDataAcknowledge;
             _arduinoProtocolLayer.CommunicationErrorOccured -= HandleCommunicationError;
             CommandHistoryQueue.Enqueue("Bei der Kommunikation mit dem Arduino ist ein Fehler aufgetreten.");
+            StopSending();
         }
 
         private void HandleDataAcknowledge(object sender, EventArgs e) {
@@ -252,7 +238,6 @@ namespace TableCommandControl.View {
                 _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate);
 
                 CommandHistoryQueue.Enqueue($"Sent: {CurrentPolarCoordinate}");
-
             }
         }
 

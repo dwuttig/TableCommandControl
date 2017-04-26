@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Data.Common;
-using System.Text;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
@@ -14,7 +15,7 @@ namespace TableCommandControl.View.PatternGenerators {
 
         private int _helixEndRadius = 1;
 
-        private int _helixStartRadius = 200;
+        private int _helixStartRadius = 250;
 
         private double _helixWhorls = 10;
 
@@ -68,21 +69,17 @@ namespace TableCommandControl.View.PatternGenerators {
 
         private void GenerateHelix() {
             double radiusSteps = (HelixStartRadius - HelixEndRadius) / (double)_mainViewModel.Steps;
-            _mainViewModel.PolarCoordinates.Clear();
             double angleSteps = 360 * HelixWhorls / _mainViewModel.Steps;
             double currentAngle = 0;
             double currentRadius = HelixStartRadius;
-            StringBuilder sbAngles = new StringBuilder();
-            StringBuilder sbRadius = new StringBuilder();
+            IList<PolarCoordinate> polarCoordinates = new List<PolarCoordinate>();
             for (int i = 0; i < _mainViewModel.Steps + 1; i++) {
-                _mainViewModel.PolarCoordinates.Add(new PolarCoordinate(currentAngle, currentRadius));
-                sbAngles.Append($"{(int)(currentAngle/0.9)},");
-                sbRadius.Append($"{(int)currentRadius*10},");
+                polarCoordinates.Add(new PolarCoordinate(currentAngle, currentRadius));
+
                 currentRadius -= radiusSteps;
                 currentAngle += angleSteps;
             }
-            string angle = sbAngles.ToString();
-            string radius = sbRadius.ToString();
+            _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(polarCoordinates);
         }
     }
 }
