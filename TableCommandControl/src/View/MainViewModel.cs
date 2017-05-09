@@ -36,13 +36,14 @@ namespace TableCommandControl.View {
         private ObservableCollection<PolarCoordinate> _polarCoordinates = new ObservableCollection<PolarCoordinate>();
         private string _port = "COM6";
 
-        private double _radiusFactor = 2;
+        private double _radiusFactor = 50;
 
         private RelayCommand _startSendingCommand;
 
         private int _steps = 200;
 
         private RelayCommand _stopSendingCommand;
+        private RelayCommand _setZeroCommand;
 
         private int _tableSizeInMillimeters = 300;
 
@@ -52,6 +53,7 @@ namespace TableCommandControl.View {
             try
             {Ports = new List<string> {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
                 _arduinoProtocolLayer.Initialize();
+                RadiusFactor = 50;
                 PatternGenerators.Add(new CircleGenerator(this));
                 PatternGenerators.Add(new HelixGenerator(this));
                 PatternGenerators.Add(new RectangleGenerator(this));
@@ -205,6 +207,28 @@ namespace TableCommandControl.View {
 
                 return _stopSendingCommand;
             }
+        }
+        
+        /// <summary>
+        ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
+        /// </summary>
+        public RelayCommand SetZeroCommand
+        {
+            get {
+                if (_setZeroCommand == null) {
+                    _setZeroCommand = new RelayCommand(SetZero);
+                }
+
+                return _setZeroCommand;
+            }
+        }
+
+        private void SetZero() {
+            PolarCoordinates.Clear();
+            PolarCoordinates.Add(new PolarCoordinate(0,0));
+            CurrentPolarCoordinate = PolarCoordinates.First();
+            StartSending();
+            StopSending();
         }
 
         /// <summary>

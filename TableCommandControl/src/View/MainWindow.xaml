@@ -187,11 +187,13 @@
 
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" /> 
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ListView ItemsSource="{Binding PolarCoordinates}" SelectedItem="{Binding CurrentPolarCoordinate, Mode=TwoWay}"/>
-                <StatusBar Grid.Row="1">
+                <Button Command="{Binding SetZeroCommand}" Content="Goto Center"></Button>
+                <ListView Grid.Row="1" ItemsSource="{Binding PolarCoordinates}" SelectedItem="{Binding CurrentPolarCoordinate, Mode=TwoWay}"/>
+                <StatusBar Grid.Row="2">
                     <Button Content="Start sending"
                             Command="{Binding StartSendingCommand}" />
                     <Button Content="Stop sending"

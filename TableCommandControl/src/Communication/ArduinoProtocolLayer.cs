@@ -11,7 +11,7 @@ namespace TableCommandControl.Communication {
         private const string ACK = "A";
         private const string ERROR = "E";
         private double _angleFactor = 1;
-        private double _polarRadiusFactor = 1;
+        private double _polarRadiusFactor = 50;
         private SerialPort _serialPort = new SerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
 
         /// <summary>

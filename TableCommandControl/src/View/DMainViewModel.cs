@@ -99,6 +99,11 @@ namespace TableCommandControl.View {
         /// </summary>
         public IList<string> Ports { get; set; }
 
+        /// <summary>
+        ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
+        /// </summary>
+        public RelayCommand SetZeroCommand { get; }
+
         public ListBox ListBox { get; set; }
     }
 }
