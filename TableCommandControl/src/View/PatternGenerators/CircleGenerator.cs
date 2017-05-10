@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
@@ -9,7 +11,7 @@ namespace TableCommandControl.View.PatternGenerators {
     public class CircleGenerator : ViewModelBase, IPatternGenerator {
         private readonly IMainViewModel _mainViewModel;
 
-        private int _circleRadius = 1;
+        private int _circleRadius = 250;
 
         private RelayCommand _generateCircleCommand;
 
@@ -46,13 +48,15 @@ namespace TableCommandControl.View.PatternGenerators {
         }
 
         private void GenerateCircle() {
-            _mainViewModel.PolarCoordinates.Clear();
             double angleSteps = 360 / (double)_mainViewModel.Steps;
             double currentAngle = 0;
+            IList<PolarCoordinate> polarCoordinates = new List<PolarCoordinate>();
             for (int i = 0; i < _mainViewModel.Steps + 1; i++) {
-                _mainViewModel.PolarCoordinates.Add(new PolarCoordinate(currentAngle, _circleRadius));
+                polarCoordinates.Add(new PolarCoordinate(currentAngle, _circleRadius));
                 currentAngle += angleSteps;
             }
+
+            _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(polarCoordinates);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 using Com.QueoFlow.Commons.Mvvm;
@@ -12,7 +14,7 @@ namespace TableCommandControl.View.PatternGenerators {
 
         private RelayCommand _generateCommand;
 
-        private int _sideA = 10;
+        private int _sideA = 400;
 
    
 
@@ -54,10 +56,12 @@ namespace TableCommandControl.View.PatternGenerators {
             _mainViewModel.PolarCoordinates.Clear();
             double currentAngle = 0;
             double angleSteps = 360 / (double)_mainViewModel.Steps;
+            IList<PolarCoordinate> polarCoordinates = new List<PolarCoordinate>();
             for (int i = 0; i < _mainViewModel.Steps+1; i++) {
-                _mainViewModel.PolarCoordinates.Add(new PolarCoordinate(currentAngle, GetRadiusFroAngle(currentAngle)*SideA/2));
+                polarCoordinates.Add(new PolarCoordinate(currentAngle, GetRadiusFroAngle(currentAngle)*SideA/2));
                 currentAngle += angleSteps;
             }
+            _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(polarCoordinates);
         }
 
         private double GetRadiusFroAngle(double angle) {

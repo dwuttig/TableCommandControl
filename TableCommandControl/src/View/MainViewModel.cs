@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
-
+using Common.Logging;
 using TableCommandControl.Collections;
 using TableCommandControl.Communication;
 using TableCommandControl.Domain;
@@ -14,11 +13,11 @@ using TableCommandControl.View.PatternGenerators;
 namespace TableCommandControl.View {
     public class MainViewModel : WindowViewModelBase, IMainViewModel {
         private readonly ArduinoProtocolLayer _arduinoProtocolLayer = new ArduinoProtocolLayer();
+        private readonly ILog _logger = LogManager.GetLogger(typeof(MainViewModel));
 
         private double _angleFactor = 1;
 
         private ObservableQueue<string> _commandHistoryQueue = new ObservableQueue<string>(10);
-
 
         private string _communicationProtocolText = string.Empty;
 
@@ -31,27 +30,27 @@ namespace TableCommandControl.View {
         private string _infoMessage;
 
         private ObservableCollection<IPatternGenerator> _patternGenerators =
-                new ObservableCollection<IPatternGenerator>();
+            new ObservableCollection<IPatternGenerator>();
 
         private ObservableCollection<PolarCoordinate> _polarCoordinates = new ObservableCollection<PolarCoordinate>();
         private string _port = "COM6";
 
+
         private double _radiusFactor = 50;
 
-        private RelayCommand _startSendingCommand;
-
-        private int _steps = 200;
-
-        private RelayCommand _stopSendingCommand;
         private RelayCommand _setZeroCommand;
+
+
+        private RelayCommand _startSendingCommand;
+        private int _steps = 200;
+        private RelayCommand _stopSendingCommand;
+
 
         private int _tableSizeInMillimeters = 300;
 
         public MainViewModel() {
-
-            
-            try
-            {Ports = new List<string> {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
+            try {
+                Ports = new List<string> {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
                 _arduinoProtocolLayer.Initialize();
                 RadiusFactor = 50;
                 PatternGenerators.Add(new CircleGenerator(this));
@@ -60,34 +59,10 @@ namespace TableCommandControl.View {
                 PatternGenerators.Add(new RectangularHelixGenerator(this));
                 CommandHistoryQueue.Enqueue("Started...");
             }
-            catch (Exception e)
-            {
-
+            catch (Exception e) {
                 CommandHistoryQueue.Enqueue("Init error...");
             }
         }
-
-        /// <summary>
-        ///     Setzt den Port
-        /// </summary>
-        public string Port
-        {
-            get { return _port; }
-            set
-            {
-                _port = value;
-                _arduinoProtocolLayer.SetPort(_port);
-            }
-        }
-
-        /// <summary>
-        ///     Setzt die Liste der Ports
-        /// </summary>
-        public IList<string> Ports { get; set; }
-
-
-
-        
 
         /// <summary>
         ///     Liefert oder setzt den AngleFactor
@@ -99,7 +74,6 @@ namespace TableCommandControl.View {
                 _arduinoProtocolLayer.SetAngleFactor(_angleFactor);
             }
         }
-
 
         /// <summary>
         ///     Liefert oder setzt die Queue für das Sendeprotokoll
@@ -165,6 +139,22 @@ namespace TableCommandControl.View {
         }
 
         /// <summary>
+        ///     Setzt den Port
+        /// </summary>
+        public string Port {
+            get { return _port; }
+            set {
+                _port = value;
+                _arduinoProtocolLayer.SetPort(_port);
+            }
+        }
+
+        /// <summary>
+        ///     Setzt die Liste der Ports
+        /// </summary>
+        public IList<string> Ports { get; set; }
+
+        /// <summary>
         ///     Liefert oder setzt den RadiusFactor
         /// </summary>
         public double RadiusFactor {
@@ -208,12 +198,11 @@ namespace TableCommandControl.View {
                 return _stopSendingCommand;
             }
         }
-        
+
         /// <summary>
         ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
         /// </summary>
-        public RelayCommand SetZeroCommand
-        {
+        public RelayCommand SetZeroCommand {
             get {
                 if (_setZeroCommand == null) {
                     _setZeroCommand = new RelayCommand(SetZero);
@@ -223,20 +212,20 @@ namespace TableCommandControl.View {
             }
         }
 
-        private void SetZero() {
-            PolarCoordinates.Clear();
-            PolarCoordinates.Add(new PolarCoordinate(0,0));
-            CurrentPolarCoordinate = PolarCoordinates.First();
-            StartSending();
-            StopSending();
-        }
-
         /// <summary>
         ///     Liefert oder setzt die Tischgröße in Millimeter
         /// </summary>
         public int TableRadiusInMillimeters {
             get { return _tableSizeInMillimeters; }
             set { SetProperty(ref _tableSizeInMillimeters, value); }
+        }
+
+        private void SetZero() {
+            PolarCoordinates.Clear();
+            PolarCoordinates.Add(new PolarCoordinate(0, 0));
+            CurrentPolarCoordinate = PolarCoordinates.First();
+            StartSending();
+            StopSending();
         }
 
         /// <summary>
@@ -258,9 +247,11 @@ namespace TableCommandControl.View {
         }
 
         private void HandleCommunicationError(object sender, Exception e) {
+            _logger.Error(e);
             _arduinoProtocolLayer.DataAcknowledgeReceived -= HandleDataAcknowledge;
             _arduinoProtocolLayer.CommunicationErrorOccured -= HandleCommunicationError;
             CommandHistoryQueue.Enqueue("Bei der Kommunikation mit dem Arduino ist ein Fehler aufgetreten.");
+            StopSending();
         }
 
         private void HandleDataAcknowledge(object sender, EventArgs e) {
@@ -268,7 +259,8 @@ namespace TableCommandControl.View {
                 int currentIndex = PolarCoordinates.IndexOf(CurrentPolarCoordinate);
                 if (currentIndex < PolarCoordinates.Count - 1) {
                     CurrentPolarCoordinate = PolarCoordinates[currentIndex + 1];
-                } else {
+                }
+                else {
                     CurrentPolarCoordinate = PolarCoordinates.FirstOrDefault();
                 }
             }
@@ -276,7 +268,6 @@ namespace TableCommandControl.View {
                 _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate);
 
                 CommandHistoryQueue.Enqueue($"Sent: {CurrentPolarCoordinate}");
-
             }
         }
 

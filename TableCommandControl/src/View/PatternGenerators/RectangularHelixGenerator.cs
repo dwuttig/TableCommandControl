@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
+
 using TableCommandControl.Domain;
 
 namespace TableCommandControl.View.PatternGenerators {
@@ -25,19 +27,32 @@ namespace TableCommandControl.View.PatternGenerators {
         }
 
         /// <summary>
-        ///     Liefert oder setzt den StartRadius
-        /// </summary>
-        public int StartLength {
-            get { return _startLength; }
-            set { SetProperty(ref _startLength, value); }
-        }
-
-        /// <summary>
         ///     Liefert oder setzt den Endradius
         /// </summary>
         public int EndLength {
             get { return _endLength; }
             set { SetProperty(ref _endLength, value); }
+        }
+
+        /// <summary>
+        ///     Liefert den Command zum generieren des Pfads
+        /// </summary>
+        public RelayCommand GenerateCommand {
+            get {
+                if (_generateCommand == null) {
+                    _generateCommand = new RelayCommand(Generate, CanGenerate);
+                }
+
+                return _generateCommand;
+            }
+        }
+
+        /// <summary>
+        ///     Liefert oder setzt den StartRadius
+        /// </summary>
+        public int StartLength {
+            get { return _startLength; }
+            set { SetProperty(ref _startLength, value); }
         }
 
         /// <summary>
@@ -48,26 +63,17 @@ namespace TableCommandControl.View.PatternGenerators {
             set { SetProperty(ref _whorlCount, value); }
         }
 
-        /// <summary>
-        ///     Liefert den Command zum generieren des Pfads
-        /// </summary>
-        public RelayCommand GenerateCommand {
-            get {
-                if (_generateCommand == null)
-                    _generateCommand = new RelayCommand(Generate, CanGenerate);
-
-                return _generateCommand;
-            }
+        private bool CanGenerate() {
+            return true;
         }
 
         private void Generate() {
             double currentRadius = StartLength;
             double radiusStepSize = (StartLength - EndLength) / WhorlCount;
-            _mainViewModel.PolarCoordinates.Clear();
+
             double currentAngle = 0;
             double angleSteps = 360.0 / _mainViewModel.Steps;
             IList<PolarCoordinate> coordinates = new List<PolarCoordinate>();
-
 
             for (int w = 0; w < WhorlCount; w++) {
                 for (int i = 0; i < _mainViewModel.Steps + 1; i++) {
@@ -81,13 +87,9 @@ namespace TableCommandControl.View.PatternGenerators {
             _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(coordinates);
         }
 
-        private double GetRadiusFroAngle(double angle) {
+        private static double GetRadiusFroAngle(double angle) {
             angle = ((angle + 45) % 90 - 45) / 180 * Math.PI;
             return 1 / Math.Cos(angle);
-        }
-
-        private bool CanGenerate() {
-            return true;
         }
     }
 }

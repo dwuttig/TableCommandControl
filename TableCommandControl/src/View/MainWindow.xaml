@@ -28,7 +28,7 @@
                             <xctk:IntegerUpDown Value="{Binding CircleRadius}" />
                         </HeaderedContentControl>
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom"
+                                DockPanel.Dock="Bottom" IsDefault="True"
                                 Command="{Binding GenerateCircleCommand}" />
                     </StackPanel>
                 </Expander>
@@ -55,7 +55,7 @@
                                                Minimum="1" />
                         </HeaderedContentControl>
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom"
+                                DockPanel.Dock="Bottom" IsDefault="True"
                                 Command="{Binding GenerateHelixCommand}" />
 
                     </StackPanel>
@@ -76,7 +76,7 @@
                         </HeaderedContentControl>
                    
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom"
+                                DockPanel.Dock="Bottom" IsDefault="True"
                                 Command="{Binding GenerateCommand}" />
 
                     </StackPanel>
@@ -105,7 +105,7 @@
                         </HeaderedContentControl>
                    
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom"
+                                DockPanel.Dock="Bottom" IsDefault="True"
                                 Command="{Binding GenerateCommand}" />
 
                     </StackPanel>
@@ -169,7 +169,7 @@
                                     Minimum="0" />
             </HeaderedContentControl>
             <GroupBox Header="Generatoren">
-                <ListView ItemsSource="{Binding PatternGenerators}"
+                <ListView ItemsSource="{Binding PatternGenerators}" ScrollViewer.CanContentScroll="false"
                           
                           Background="Transparent"
                           BorderThickness="0" />
