@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
+
 using Common.Logging;
+
 using TableCommandControl.Collections;
 using TableCommandControl.Communication;
 using TableCommandControl.Domain;
@@ -15,51 +18,34 @@ namespace TableCommandControl.View {
         private readonly ArduinoProtocolLayer _arduinoProtocolLayer = new ArduinoProtocolLayer();
         private readonly ILog _logger = LogManager.GetLogger(typeof(MainViewModel));
 
-        private double _angleFactor = 1;
-
+        private double _angleFactor;
         private ObservableQueue<string> _commandHistoryQueue = new ObservableQueue<string>(10);
-
-        private string _communicationProtocolText = string.Empty;
-
         private ObservableCollection<PolarCoordinate> _currentPoints = new ObservableCollection<PolarCoordinate>();
-
         private PolarCoordinate _currentPolarCoordinate;
-
         private string _errorMessage;
-
         private string _infoMessage;
-
-        private ObservableCollection<IPatternGenerator> _patternGenerators =
-            new ObservableCollection<IPatternGenerator>();
-
-        private ObservableCollection<PolarCoordinate> _polarCoordinates = new ObservableCollection<PolarCoordinate>();
+        private IList<IPatternGenerator> _patternGenerators = new List<IPatternGenerator>();
+        private IList<PolarCoordinate> _polarCoordinates = new List<PolarCoordinate>();
         private string _port = "COM6";
-
-
-        private double _radiusFactor = 50;
-
+        private double _radiusFactor;
         private RelayCommand _setZeroCommand;
-
-
         private RelayCommand _startSendingCommand;
         private int _steps = 200;
         private RelayCommand _stopSendingCommand;
-
-
         private int _tableSizeInMillimeters = 300;
 
         public MainViewModel() {
             try {
-                Ports = new List<string> {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
+                Ports = new List<string> { "COM1", "COM2", "COM3", "COM4", "COM5", "COM6" };
                 _arduinoProtocolLayer.Initialize();
                 RadiusFactor = 50;
+                AngleFactor = 11.11;
                 PatternGenerators.Add(new CircleGenerator(this));
                 PatternGenerators.Add(new HelixGenerator(this));
                 PatternGenerators.Add(new RectangleGenerator(this));
                 PatternGenerators.Add(new RectangularHelixGenerator(this));
                 CommandHistoryQueue.Enqueue("Started...");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 CommandHistoryQueue.Enqueue("Init error...");
             }
         }
@@ -69,10 +55,7 @@ namespace TableCommandControl.View {
         /// </summary>
         public double AngleFactor {
             get { return _angleFactor; }
-            set {
-                SetProperty(ref _angleFactor, value);
-                _arduinoProtocolLayer.SetAngleFactor(_angleFactor);
-            }
+            set { SetProperty(ref _angleFactor, value); }
         }
 
         /// <summary>
@@ -125,7 +108,7 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die Liste der Mustergeneratoren
         /// </summary>
-        public ObservableCollection<IPatternGenerator> PatternGenerators {
+        public IList<IPatternGenerator> PatternGenerators {
             get { return _patternGenerators; }
             set { SetProperty(ref _patternGenerators, value); }
         }
@@ -133,7 +116,7 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die zu senden Polarkoordinaten.
         /// </summary>
-        public ObservableCollection<PolarCoordinate> PolarCoordinates {
+        public IList<PolarCoordinate> PolarCoordinates {
             get { return _polarCoordinates; }
             set { SetProperty(ref _polarCoordinates, value); }
         }
@@ -145,7 +128,12 @@ namespace TableCommandControl.View {
             get { return _port; }
             set {
                 _port = value;
-                _arduinoProtocolLayer.SetPort(_port);
+                try {
+                    _arduinoProtocolLayer.SetPort(_port);
+                } catch (Exception e) {
+                    _logger.Error(e);
+                    SetErrorMessage(e.Message);
+                }
             }
         }
 
@@ -159,9 +147,19 @@ namespace TableCommandControl.View {
         /// </summary>
         public double RadiusFactor {
             get { return _radiusFactor; }
-            set {
-                SetProperty(ref _radiusFactor, value);
-                _arduinoProtocolLayer.SetPolarRadiusFactor(_radiusFactor);
+            set { SetProperty(ref _radiusFactor, value); }
+        }
+
+        /// <summary>
+        ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
+        /// </summary>
+        public RelayCommand SetZeroCommand {
+            get {
+                if (_setZeroCommand == null) {
+                    _setZeroCommand = new RelayCommand(SetZero);
+                }
+
+                return _setZeroCommand;
             }
         }
 
@@ -200,32 +198,11 @@ namespace TableCommandControl.View {
         }
 
         /// <summary>
-        ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
-        /// </summary>
-        public RelayCommand SetZeroCommand {
-            get {
-                if (_setZeroCommand == null) {
-                    _setZeroCommand = new RelayCommand(SetZero);
-                }
-
-                return _setZeroCommand;
-            }
-        }
-
-        /// <summary>
         ///     Liefert oder setzt die Tischgröße in Millimeter
         /// </summary>
         public int TableRadiusInMillimeters {
             get { return _tableSizeInMillimeters; }
             set { SetProperty(ref _tableSizeInMillimeters, value); }
-        }
-
-        private void SetZero() {
-            PolarCoordinates.Clear();
-            PolarCoordinates.Add(new PolarCoordinate(0, 0));
-            CurrentPolarCoordinate = PolarCoordinates.First();
-            StartSending();
-            StopSending();
         }
 
         /// <summary>
@@ -259,28 +236,45 @@ namespace TableCommandControl.View {
                 int currentIndex = PolarCoordinates.IndexOf(CurrentPolarCoordinate);
                 if (currentIndex < PolarCoordinates.Count - 1) {
                     CurrentPolarCoordinate = PolarCoordinates[currentIndex + 1];
-                }
-                else {
+                } else {
                     CurrentPolarCoordinate = PolarCoordinates.FirstOrDefault();
                 }
             }
             if (CurrentPolarCoordinate != null) {
-                _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate);
+                _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate, _angleFactor, _radiusFactor);
 
                 CommandHistoryQueue.Enqueue($"Sent: {CurrentPolarCoordinate}");
             }
         }
 
-        private void StartSending() {
-            _arduinoProtocolLayer.Initialize();
-            _arduinoProtocolLayer.DataAcknowledgeReceived += HandleDataAcknowledge;
-            _arduinoProtocolLayer.CommunicationErrorOccured += HandleCommunicationError;
-            if (CurrentPolarCoordinate == null) {
-                CurrentPolarCoordinate = PolarCoordinates.FirstOrDefault();
+        private void SetZero() {
+            try {
+                PolarCoordinates.Clear();
+                PolarCoordinates.Add(new PolarCoordinate(0, 0));
+                CurrentPolarCoordinate = PolarCoordinates.First();
+                StartSending();
+                StopSending();
+            } catch (Exception e) {
+                _logger.Error(e);
+                SetErrorMessage(e.Message);
             }
-            if (CurrentPolarCoordinate != null) {
-                _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate);
-                CommandHistoryQueue.Enqueue($"Sent: {CurrentPolarCoordinate}");
+        }
+
+        private void StartSending() {
+            try {
+                _arduinoProtocolLayer.Initialize();
+                _arduinoProtocolLayer.DataAcknowledgeReceived += HandleDataAcknowledge;
+                _arduinoProtocolLayer.CommunicationErrorOccured += HandleCommunicationError;
+                if (CurrentPolarCoordinate == null) {
+                    CurrentPolarCoordinate = PolarCoordinates.FirstOrDefault();
+                }
+                if (CurrentPolarCoordinate != null) {
+                    _arduinoProtocolLayer.SendpolarCoordinate(CurrentPolarCoordinate, _angleFactor, _radiusFactor);
+                    CommandHistoryQueue.Enqueue($"Sent: {CurrentPolarCoordinate}");
+                }
+            } catch (Exception e) {
+                _logger.Error(e);
+                SetErrorMessage(e.Message);
             }
         }
 

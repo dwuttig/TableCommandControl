@@ -2,8 +2,13 @@ using System;
 using System.Windows;
 
 namespace TableCommandControl.Domain {
+    /// <summary>
+    ///     Diese Klasse stellt eine Polarkoordinate dar.
+    /// </summary>
     public class PolarCoordinate {
-        /// <summary>Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.</summary>
+        /// <summary>
+        /// Initialisiert eine neue Instanz der <see cref="T:System.Object" />-Klasse.
+        /// </summary>
         public PolarCoordinate(double angle, double radius) {
             if (radius < 0) {
                 throw new ArgumentException("Der radius muss größer gleich 0 sein");
@@ -18,7 +23,7 @@ namespace TableCommandControl.Domain {
         public double Angle { get; set; }
 
         /// <summary>
-        ///     Liefert den Winkel in Radians
+        ///     Liefert den Winkel im Bogenmaß
         /// </summary>
         public double AngleAsRadians {
             get { return Angle * Math.PI / 180; }
@@ -36,21 +41,26 @@ namespace TableCommandControl.Domain {
         /// </summary>
         public double Radius { get; set; }
 
+        /// <summary>
+        /// Liefert eine Polarkoordinate anhand eines Punktes in kartesischen Koordinaten
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         public static PolarCoordinate FromPoint(Point point) {
             double radius = Math.Sqrt(Math.Pow(point.X, 2) + Math.Pow(point.Y, 2));
             double atan = Math.Atan(point.Y / point.X);
             double angle = Trigonometry.RadianToDegree(atan);
-            if (point.X<0 && point.Y>0) {
+            if (point.X < 0 && point.Y > 0) {
                 angle = 180 + Math.Abs(angle);
             }
-            if (point.X<0 && point.Y<0) {
+            if (point.X < 0 && point.Y < 0) {
                 angle = 180 - Math.Abs(angle);
             }
-            if (point.X>0 && point.Y<0) {
+            if (point.X > 0 && point.Y < 0) {
                 angle = Math.Abs(angle);
             }
-            if (point.X>0 && point.Y>0) {
-                angle = 360-Math.Abs(angle);
+            if (point.X > 0 && point.Y > 0) {
+                angle = 360 - Math.Abs(angle);
             }
             return new PolarCoordinate(angle, radius);
         }
@@ -61,8 +71,8 @@ namespace TableCommandControl.Domain {
         /// <param name="angleFactor"></param>
         /// <param name="polarRadiusFactor"></param>
         /// <returns></returns>
-        public string AsCommand(double angleFactor, double polarRadiusFactor) {
-            return $"{(int)(Angle*angleFactor)};{(int)(Radius*polarRadiusFactor)}";
+        public string AsTableCommand(double angleFactor, double polarRadiusFactor) {
+            return $"{(int)(Angle * angleFactor)};{(int)(Radius * polarRadiusFactor)}";
         }
 
         /// <summary>Gibt eine Zeichenfolge zurück, die das aktuelle Objekt darstellt.</summary>
@@ -70,7 +80,5 @@ namespace TableCommandControl.Domain {
         public override string ToString() {
             return $"[{Angle:N2}°;{Radius:N2}mm]";
         }
-
-        
     }
 }

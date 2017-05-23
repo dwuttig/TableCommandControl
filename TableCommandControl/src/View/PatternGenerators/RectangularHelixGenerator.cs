@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
 using TableCommandControl.Domain;
+using TableCommandControl.Utils;
 
 namespace TableCommandControl.View.PatternGenerators {
     public class RectangularHelixGenerator : ViewModelBase, IPatternGenerator {
@@ -20,9 +20,7 @@ namespace TableCommandControl.View.PatternGenerators {
         private double _whorlCount = 10;
 
         public RectangularHelixGenerator(IMainViewModel mainViewModel) {
-            if (mainViewModel == null) {
-                throw new ArgumentNullException(nameof(mainViewModel));
-            }
+            Require.NotNull(mainViewModel, "mainViewModel");
             _mainViewModel = mainViewModel;
         }
 
@@ -63,6 +61,11 @@ namespace TableCommandControl.View.PatternGenerators {
             set { SetProperty(ref _whorlCount, value); }
         }
 
+        private static double GetRadiusFroAngle(double angle) {
+            angle = ((angle + 45) % 90 - 45) / 180 * Math.PI;
+            return 1 / Math.Cos(angle);
+        }
+
         private bool CanGenerate() {
             return true;
         }
@@ -84,12 +87,7 @@ namespace TableCommandControl.View.PatternGenerators {
                 currentRadius -= radiusStepSize;
             }
 
-            _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(coordinates);
-        }
-
-        private static double GetRadiusFroAngle(double angle) {
-            angle = ((angle + 45) % 90 - 45) / 180 * Math.PI;
-            return 1 / Math.Cos(angle);
+            _mainViewModel.PolarCoordinates = coordinates;
         }
     }
 }

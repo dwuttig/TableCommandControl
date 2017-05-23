@@ -35,6 +35,50 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Arction.DirectX, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.DirectX.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.DirectXFiles, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.DirectXFiles.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.DirectXInit, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.DirectXInit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.Licensing, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.Licensing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.RenderingDefinitions, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.RenderingDefinitions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.RenderingEngine, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.RenderingEngine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.RenderingEngine11, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.RenderingEngine11.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.RenderingEngine9, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.RenderingEngine9.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.Wpf.BindableCharting.LightningChartUltimate, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.Wpf.BindableCharting.LightningChartUltimate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.Wpf.Charting.LightningChartUltimate, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.Wpf.Charting.LightningChartUltimate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Arction.Wpf.SemibindableCharting.LightningChartUltimate, Version=7.2.6.4001, Culture=neutral, PublicKeyToken=6484d7bb14b95dd3, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightningChartUltimateWPF7.7.2.6.1\lib\net40-client\Arction.Wpf.SemibindableCharting.LightningChartUltimate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Common.Logging, Version=3.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\packages\Common.Logging.3.2.0\lib\net40\Common.Logging.dll</HintPath>
       <Private>True</Private>
@@ -111,7 +155,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="src\Collections\ObservableQueue.cs" />
     <Compile Include="src\Domain\Trigonometry.cs" />
-    <Compile Include="src\View\ListBoxWriter.cs" />
+    <Compile Include="src\Utils\Require.cs" />
     <Compile Include="src\View\PatternGenerators\CircleGenerator.cs" />
     <Compile Include="src\View\PatternGenerators\HelixGenerator.cs" />
     <Compile Include="src\View\PatternGenerators\IPatternGenerator.cs" />

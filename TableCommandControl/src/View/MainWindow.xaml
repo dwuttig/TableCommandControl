@@ -10,6 +10,9 @@
         xmlns:behaviors="clr-namespace:Com.QueoFlow.Commons.Mvvm.Behaviors;assembly=Queo.Commons.MVVM"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:generators="clr-namespace:TableCommandControl.View.PatternGenerators"
+        xmlns:lcub="http://schemas.arction.com/bindablecharting/ultimate/"
+        xmlns:lcusb="http://schemas.arction.com/semibindablecharting/ultimate/"
+        xmlns:lcunb="http://schemas.arction.com/charting/ultimate/"
         mc:Ignorable="d"
         Background="Gainsboro"
         Title="MainWindow"
@@ -28,7 +31,8 @@
                             <xctk:IntegerUpDown Value="{Binding CircleRadius}" />
                         </HeaderedContentControl>
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom" IsDefault="True"
+                                DockPanel.Dock="Bottom"
+                                IsDefault="True"
                                 Command="{Binding GenerateCircleCommand}" />
                     </StackPanel>
                 </Expander>
@@ -55,7 +59,8 @@
                                                Minimum="1" />
                         </HeaderedContentControl>
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom" IsDefault="True"
+                                DockPanel.Dock="Bottom"
+                                IsDefault="True"
                                 Command="{Binding GenerateHelixCommand}" />
 
                     </StackPanel>
@@ -74,9 +79,10 @@
                             <xctk:IntegerUpDown Value="{Binding SideA}"
                                                 Minimum="0" />
                         </HeaderedContentControl>
-                   
+
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom" IsDefault="True"
+                                DockPanel.Dock="Bottom"
+                                IsDefault="True"
                                 Command="{Binding GenerateCommand}" />
 
                     </StackPanel>
@@ -103,9 +109,10 @@
                             <xctk:IntegerUpDown Value="{Binding WhorlCount}"
                                                 Minimum="0" />
                         </HeaderedContentControl>
-                   
+
                         <Button Content="Generate Coordinates"
-                                DockPanel.Dock="Bottom" IsDefault="True"
+                                DockPanel.Dock="Bottom"
+                                IsDefault="True"
                                 Command="{Binding GenerateCommand}" />
 
                     </StackPanel>
@@ -137,7 +144,7 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -145,8 +152,10 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <DockPanel Grid.IsSharedSizeScope="True">
-            <HeaderedContentControl Header="Port:" DockPanel.Dock="Top">
-                <ComboBox SelectedItem="{Binding Port}" ItemsSource="{Binding Ports}"></ComboBox>
+            <HeaderedContentControl Header="Port:"
+                                    DockPanel.Dock="Top">
+                <ComboBox SelectedItem="{Binding Port}"
+                          ItemsSource="{Binding Ports}" />
             </HeaderedContentControl>
             <HeaderedContentControl Header="Table radius [mm]:"
                                     DockPanel.Dock="Top">
@@ -157,20 +166,22 @@
                                     DockPanel.Dock="Top">
                 <xctk:IntegerUpDown Value="{Binding Steps}"
                                     Minimum="0" />
-            </HeaderedContentControl>  
+            </HeaderedContentControl>
             <HeaderedContentControl Header="Angle Factor:"
                                     DockPanel.Dock="Top">
-                <xctk:DoubleUpDown Value="{Binding AngleFactor}" Increment="0.1"
-                                    Minimum="0" />
-            </HeaderedContentControl>    
+                <xctk:DoubleUpDown Value="{Binding AngleFactor}"
+                                   Increment="0.1"
+                                   Minimum="0" />
+            </HeaderedContentControl>
             <HeaderedContentControl Header="Radius Factor:"
                                     DockPanel.Dock="Top">
-                <xctk:DoubleUpDown Value="{Binding RadiusFactor}" Increment="0.1"
-                                    Minimum="0" />
+                <xctk:DoubleUpDown Value="{Binding RadiusFactor}"
+                                   Increment="0.1"
+                                   Minimum="0" />
             </HeaderedContentControl>
             <GroupBox Header="Generatoren">
-                <ListView ItemsSource="{Binding PatternGenerators}" ScrollViewer.CanContentScroll="false"
-                          
+                <ListView ItemsSource="{Binding PatternGenerators}"
+                          ScrollViewer.CanContentScroll="false"
                           Background="Transparent"
                           BorderThickness="0" />
 
@@ -187,12 +198,15 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" /> 
+                    <RowDefinition Height="Auto" />
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Button Command="{Binding SetZeroCommand}" Content="Goto Center"></Button>
-                <ListView Grid.Row="1" ItemsSource="{Binding PolarCoordinates}" SelectedItem="{Binding CurrentPolarCoordinate, Mode=TwoWay}"/>
+                <Button Command="{Binding SetZeroCommand}"
+                        Content="Goto Center" />
+                <ListView Grid.Row="1"
+                          ItemsSource="{Binding PolarCoordinates}"
+                          SelectedItem="{Binding CurrentPolarCoordinate, Mode=TwoWay}" />
                 <StatusBar Grid.Row="2">
                     <Button Content="Start sending"
                             Command="{Binding StartSendingCommand}" />
@@ -212,21 +226,48 @@
             <oxy:Plot PlotType="Polar"
                       IsMouseWheelEnabled="True">
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding PolarCoordinates}" 
-                                    DataFieldY="AngleNormalized" Color="DarkBlue" StrokeThickness="1"
-                                    DataFieldX="Radius" />
-                    <oxy:ScatterSeries ItemsSource="{Binding PolarCoordinates}" 
-                                    DataFieldY="AngleNormalized"  MarkerSize="2" MarkerType="Circle" MarkerFill="DarkBlue"
-                                    DataFieldX="Radius" />
-                    <oxy:ScatterSeries ItemsSource="{Binding CurrentPoints}"  MarkerSize="3" MarkerFill="Transparent" MarkerType="Circle" MarkerStrokeThickness="1" MarkerStroke="Crimson"
+                    <oxy:LineSeries ItemsSource="{Binding PolarCoordinates}"
                                     DataFieldY="AngleNormalized"
+                                    Color="DarkBlue"
+                                    StrokeThickness="1"
                                     DataFieldX="Radius" />
+                    <oxy:ScatterSeries ItemsSource="{Binding PolarCoordinates}"
+                                       DataFieldY="AngleNormalized"
+                                       MarkerSize="2"
+                                       MarkerType="Circle"
+                                       MarkerFill="DarkBlue"
+                                       DataFieldX="Radius" />
+                    <oxy:ScatterSeries ItemsSource="{Binding CurrentPoints}"
+                                       MarkerSize="3"
+                                       MarkerFill="Transparent"
+                                       MarkerType="Circle"
+                                       MarkerStrokeThickness="1"
+                                       MarkerStroke="Crimson"
+                                       DataFieldY="AngleNormalized"
+                                       DataFieldX="Radius" />
                 </oxy:Plot.Series>
-<oxy:Plot.Axes>
-    <oxy:MagnitudeAxis Minimum="0" Maximum="{Binding TableRadiusInMillimeters}" />
-    <oxy:AngleAxis Minimum="0" Maximum="360" />
-</oxy:Plot.Axes>
+                <oxy:Plot.Axes>
+                    <oxy:MagnitudeAxis Minimum="0"
+                                       Maximum="{Binding TableRadiusInMillimeters}" />
+                    <oxy:AngleAxis Minimum="0"
+                                   Maximum="360" />
+                </oxy:Plot.Axes>
             </oxy:Plot>
+            <!--<lcusb:LightningChartUltimate>
+                <lcusb:LightningChartUltimate.ViewXY>
+                    <lcusb:ViewXY>
+                        <lcusb:ViewXY.XAxes>
+                            <lcusb:AxisX />
+                        </lcusb:ViewXY.XAxes>
+                        <lcusb:ViewXY.YAxes>
+                            <lcusb:AxisY />
+                        </lcusb:ViewXY.YAxes>
+                        <lcusb:ViewXY.PointLineSeries>
+                            <lcusb:PointLineSeries x:Name="series" />
+                        </lcusb:ViewXY.PointLineSeries>
+                    </lcusb:ViewXY>
+                </lcusb:LightningChartUltimate.ViewXY>
+            </lcusb:LightningChartUltimate>-->
         </GroupBox>
         <GridSplitter Grid.Row="1"
                       Background="DarkGray"
@@ -240,9 +281,8 @@
                   Grid.Column="0"
                   Grid.Row="2"
                   Header="Communication Protocol">
-            <ListBox  Height="200" ItemsSource="{Binding CommandHistoryQueue}" >
-           
-            </ListBox>
+            <ListBox Height="200"
+                     ItemsSource="{Binding CommandHistoryQueue}" />
         </GroupBox>
 
     </Grid>

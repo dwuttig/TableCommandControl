@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
 using TableCommandControl.Domain;
+using TableCommandControl.Utils;
 
 namespace TableCommandControl.View.PatternGenerators {
     public class HelixGenerator : ViewModelBase, IPatternGenerator {
         private readonly IMainViewModel _mainViewModel;
-
         private RelayCommand _generateHelixCommand;
-
         private int _helixEndRadius = 1;
-
         private int _helixStartRadius = 250;
-
         private double _helixWhorls = 10;
 
         public HelixGenerator(IMainViewModel mainViewModel) {
-            if (mainViewModel == null) {
-                throw new ArgumentNullException(nameof(mainViewModel));
-            }
+            Require.NotNull(mainViewModel, "mainViewModel");
             _mainViewModel = mainViewModel;
         }
 
@@ -75,11 +69,10 @@ namespace TableCommandControl.View.PatternGenerators {
             IList<PolarCoordinate> polarCoordinates = new List<PolarCoordinate>();
             for (int i = 0; i < _mainViewModel.Steps + 1; i++) {
                 polarCoordinates.Add(new PolarCoordinate(currentAngle, currentRadius));
-
                 currentRadius -= radiusSteps;
                 currentAngle += angleSteps;
             }
-            _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(polarCoordinates);
+            _mainViewModel.PolarCoordinates = polarCoordinates;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
+
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
@@ -45,12 +45,12 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die Liste der Mustergeneratoren
         /// </summary>
-        public ObservableCollection<IPatternGenerator> PatternGenerators { get; set; }
+        public IList<IPatternGenerator> PatternGenerators { get; set; }
 
         /// <summary>
         ///     Liefert oder setzt die zu senden Polarkoordinaten.
         /// </summary>
-        public ObservableCollection<PolarCoordinate> PolarCoordinates { get; set; }
+        public IList<PolarCoordinate> PolarCoordinates { get; set; }
 
         /// <summary>
         ///     Liefert den Command zum Start des Sendens der Koordinaten
@@ -103,7 +103,5 @@ namespace TableCommandControl.View {
         ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
         /// </summary>
         public RelayCommand SetZeroCommand { get; }
-
-        public ListBox ListBox { get; set; }
     }
 }

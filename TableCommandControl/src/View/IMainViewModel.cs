@@ -1,10 +1,5 @@
-
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-
-
-
 
 using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
@@ -49,17 +44,32 @@ namespace TableCommandControl.View {
         /// <summary>
         ///     Liefert oder setzt die Liste der Mustergeneratoren
         /// </summary>
-        ObservableCollection<IPatternGenerator> PatternGenerators { get; set; }
+        IList<IPatternGenerator> PatternGenerators { get; set; }
 
         /// <summary>
         ///     Liefert oder setzt die zu senden Polarkoordinaten.
         /// </summary>
-        ObservableCollection<PolarCoordinate> PolarCoordinates { get; set; }
+        IList<PolarCoordinate> PolarCoordinates { get; set; }
+
+        /// <summary>
+        ///     Setzt den Port
+        /// </summary>
+        string Port { get; set; }
+
+        /// <summary>
+        ///     Setzt die Liste der Ports
+        /// </summary>
+        IList<string> Ports { get; set; }
 
         /// <summary>
         ///     Liefert oder setzt den RadiusFactor
         /// </summary>
         double RadiusFactor { get; set; }
+
+        /// <summary>
+        ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
+        /// </summary>
+        RelayCommand SetZeroCommand { get; }
 
         /// <summary>
         ///     Liefert den Command zum Start des Sendens der Koordinaten
@@ -80,21 +90,5 @@ namespace TableCommandControl.View {
         ///     Liefert oder setzt die Tischgröße in Millimeter
         /// </summary>
         int TableRadiusInMillimeters { get; set; }
-
-
-        /// <summary>
-        /// Setzt den Port
-        /// </summary>
-        string Port { get; set; }
-
-        /// <summary>
-        /// Setzt die Liste der Ports
-        /// </summary>
-        IList<string> Ports { get; set; }
-
-        /// <summary>
-        ///     Liefert den Command zum Stoppen des Sendens der Koordinaten
-        /// </summary>
-        RelayCommand SetZeroCommand { get; }
     }
 }

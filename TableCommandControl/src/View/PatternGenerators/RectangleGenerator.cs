@@ -7,6 +7,7 @@ using Com.QueoFlow.Commons.Mvvm;
 using Com.QueoFlow.Commons.Mvvm.Commands;
 
 using TableCommandControl.Domain;
+using TableCommandControl.Utils;
 
 namespace TableCommandControl.View.PatternGenerators {
     public class RectangleGenerator : ViewModelBase, IPatternGenerator {
@@ -19,9 +20,7 @@ namespace TableCommandControl.View.PatternGenerators {
    
 
         public RectangleGenerator(IMainViewModel mainViewModel) {
-            if (mainViewModel == null) {
-                throw new ArgumentNullException(nameof(mainViewModel));
-            }
+            Require.NotNull(mainViewModel, "mainViewModel");
             _mainViewModel = mainViewModel;
         }
 
@@ -61,7 +60,7 @@ namespace TableCommandControl.View.PatternGenerators {
                 polarCoordinates.Add(new PolarCoordinate(currentAngle, GetRadiusFroAngle(currentAngle)*SideA/2));
                 currentAngle += angleSteps;
             }
-            _mainViewModel.PolarCoordinates = new ObservableCollection<PolarCoordinate>(polarCoordinates);
+            _mainViewModel.PolarCoordinates = polarCoordinates;
         }
 
         private double GetRadiusFroAngle(double angle) {

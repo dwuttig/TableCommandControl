@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 
+using Arction.Wpf.SemibindableCharting;
+
 namespace TableCommandControl.View {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
@@ -8,6 +10,7 @@ namespace TableCommandControl.View {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+     
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Windows;
+
 using TableCommandControl.Domain;
 
 namespace TableCommandControl.Communication {
@@ -10,17 +11,8 @@ namespace TableCommandControl.Communication {
     public class ArduinoProtocolLayer {
         private const string ACK = "A";
         private const string ERROR = "E";
-        private double _angleFactor = 1;
-        private double _polarRadiusFactor = 50;
-        private SerialPort _serialPort = new SerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
 
-        /// <summary>
-        ///     Setzt den Port neu
-        /// </summary>
-        /// <param name="port"></param>
-        public void SetPort(string port) {
-            _serialPort = new SerialPort(port, 115200, Parity.None, 8, StopBits.One);
-        }
+        private SerialPort _serialPort = new SerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
 
         /// <summary>
         ///     Wird gefeuert wenn eine Exception aufgetreten ist
@@ -36,50 +28,44 @@ namespace TableCommandControl.Communication {
         ///     Initialisiert den ProtocolLayer und öffnet den SerialPort;
         /// </summary>
         public void Initialize() {
-
             try {
                 _serialPort.DataReceived += HandleDataReceived;
                 _serialPort.Open();
-            }
-            catch (Exception e) {
-
+            } catch (Exception e) {
                 OnCommunicationErrorOccured(e);
-
             }
         }
 
-        public void SendpolarCoordinate(PolarCoordinate polarCoordinate) {
+        /// <summary>
+        ///     Sendet die Polarkoordinate als Command über die Serielle Schnittstelle zum Arduino.
+        ///     Multipliziert den Winkel und den Radius mit den entsprechenden Faktoren.
+        /// </summary>
+        /// <param name="polarCoordinate"></param>
+        /// <param name="angleFactor"></param>
+        /// <param name="polarRadiusFactor"></param>
+        public void SendpolarCoordinate(PolarCoordinate polarCoordinate, double angleFactor, double polarRadiusFactor) {
             try {
                 if (!_serialPort.IsOpen) {
                     _serialPort.Open();
                 }
-                string asCommand = polarCoordinate.AsCommand(_angleFactor, _polarRadiusFactor);
-
-                _serialPort.Write(asCommand);
-            }
-            catch (Exception e) {
-
+                string coordinateAsTableCommand = polarCoordinate.AsTableCommand(angleFactor, polarRadiusFactor);
+                _serialPort.Write(coordinateAsTableCommand);
+            } catch (Exception e) {
                 OnCommunicationErrorOccured(e);
             }
-
-
         }
 
-        public void SetPolarRadiusFactor(double radiusFactor) {
-            _polarRadiusFactor = radiusFactor;
-        }
-
-        public void SetAngleFactor(double angleFactor) {
-            _angleFactor = angleFactor;
-        }
-
-
-        protected virtual void OnCommunicationErrorOccured(Exception e) {
-            CommunicationErrorOccured?.Invoke(this, e);
-        }
-
-        protected virtual void OnDataAcknowledgeReceived() {
-            DataAcknowledgeReceived?.Invoke(this, EventArgs.Empty);
+        /// <summary>
+        ///     Setzt den Port neu
+        /// </summary>
+        /// <param name="port"></param>
+        public void SetPort(string port) {
+            if (!port.StartsWith("COM")) {
+                throw new ArgumentException("Der Port mus mit COM beginnen.");
+            }
+     
+                _serialPort = new SerialPort(port, 115200, Parity.None, 8, StopBits.One);
+        
         }
 
         private void HandleDataReceived(object sender, SerialDataReceivedEventArgs e) {
@@ -94,10 +80,17 @@ namespace TableCommandControl.Communication {
                         Application.Current.Dispatcher.InvokeAsync(() => OnCommunicationErrorOccured(new Exception()));
                     }
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 OnCommunicationErrorOccured(ex);
             }
+        }
+
+        private void OnCommunicationErrorOccured(Exception e) {
+            CommunicationErrorOccured?.Invoke(this, e);
+        }
+
+        private void OnDataAcknowledgeReceived() {
+            DataAcknowledgeReceived?.Invoke(this, EventArgs.Empty);
         }
     }
 }
